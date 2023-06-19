@@ -37,6 +37,9 @@ importers:
       langchain:
         specifier: ^0.0.95
         version: 0.0.95(mysql2@3.3.3)(typeorm@0.3.16)
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       mysql2:
         specifier: ^3.3.3
         version: 3.3.3

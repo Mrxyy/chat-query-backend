@@ -2,7 +2,6 @@ import { Global, Injectable, Module } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import knex, { Knex } from 'knex';
 import { get, set } from 'lodash';
-import getConfig from 'next/config';
 
 @Injectable()
 export class KnexContainer {
