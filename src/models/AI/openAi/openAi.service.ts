@@ -1,3 +1,4 @@
+import { defaultScope, fxTepmlate } from './../../../utils/prompts/reactLive';
 import { OpenAI } from 'langchain/llms/openai';
 import { PromptTemplate } from 'langchain/prompts';
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
@@ -14,6 +15,8 @@ import {
   disableConstraints,
   enableConstraints,
 } from 'src/utils/knex/executeSQLWithDisabledForeignKeys';
+import { GET_COMPONENT_BY_DATA } from 'src/utils/prompts/reactLive';
+import { extractCodeBlocks } from 'src/utils/parse/getCode';
 export const openAIApiKey = process.env['OPEN_AI_API_KEY'];
 
 console.log(Tool);
@@ -46,25 +49,7 @@ export class TestSqlTool extends Tool {
 
 export class OpenAIService {
   async test() {
-    // const model = new OpenAI(
-    //   {
-    //     openAIApiKey: openAIApiKey,
-    //     temperature: 0.9,
-    //   },
-    //   {
-    //     basePath:
-    //       'https://chat-gpt-next-qwn676aj7-mrxyy.vercel.app/api/openai/v1/',
-    //   },
-    // );
-    // const template = '{国家}的人口最多?';
-    // const prompt = new PromptTemplate({
-    //   template: template,
-    //   inputVariables: ['国家'],
-    // });
-    // const question = await prompt.format({ 国家: '中国' });
-    // const res = await model.call(question);
     // this.run();
-    // console.log(res, 'resresresres');
   }
 
   async run() {
@@ -132,5 +117,17 @@ If the question does not seem related to the database, just return "I don't know
     console.log(get(nth(result.intermediateSteps, -1), 'observation'));
 
     await datasource.destroy();
+  }
+
+  async getReactLiveCode(props: Record<string, any>, need: string) {
+    const result = await GET_COMPONENT_BY_DATA.call({
+      props: JSON.stringify(props),
+      need,
+      scope: defaultScope,
+      fxTepmlate: fxTepmlate,
+    });
+    return {
+      code: extractCodeBlocks(result.text)[0],
+    };
   }
 }

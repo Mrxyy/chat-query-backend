@@ -11,6 +11,8 @@ const env = [
     dialect: 'mysql',
     host: '139.198.179.193',
     port: 32094,
+    // host: '127.0.0.1',
+    // port: 3306,
     username: 'root',
     password: '123789',
     database: 'chat_query',

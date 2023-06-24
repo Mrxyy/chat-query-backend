@@ -1,4 +1,5 @@
 import { config } from 'dotenv';
+import { ChatOpenAI } from 'langchain/chat_models/openai';
 import { OpenAI } from 'langchain/llms/openai';
 config();
 
@@ -12,8 +13,19 @@ export function getOpenAi() {
       temperature: 0,
     },
     {
-      basePath:
-        'https://chat-gpt-next-qwn676aj7-mrxyy.vercel.app/api/openai/v1/',
+      basePath: 'https://chat-query-backend.netlify.app/api/openai/v1',
+    },
+  );
+}
+
+export function getChatOpenAi() {
+  return new ChatOpenAI(
+    {
+      // modelName: 'gpt-4-0613',
+      openAIApiKey: openAIApiKey,
+    },
+    {
+      basePath: 'https://chat-query-backend.netlify.app/api/openai/v1',
     },
   );
 }
