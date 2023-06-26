@@ -5,14 +5,16 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { Kenx } from './utils/knex';
 import { QueriesModel } from './models/Querys';
 import { OpenAIModule } from './models/AI/openAi';
+import { config } from 'dotenv';
+config();
+export const dbHost = process.env['DB_HOST'];
+export const dbPort = Number(process.env['DB_PORT']);
 
 const env = [
   SequelizeModule.forRoot({
     dialect: 'mysql',
-    host: '139.198.179.193',
-    port: 32094,
-    // host: '127.0.0.1',
-    // port: 3306,
+    host: dbHost,
+    port: dbPort,
     username: 'root',
     password: '123789',
     database: 'chat_query',

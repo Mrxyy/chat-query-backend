@@ -4,11 +4,12 @@ import { OpenAI } from 'langchain/llms/openai';
 config();
 
 export const openAIApiKey = process.env['OPEN_AI_API_KEY'];
+export const modelName = process.env['MODEL_NAME'];
 
 export function getOpenAi() {
   return new OpenAI(
     {
-      modelName: 'gpt-4-0613',
+      modelName: modelName,
       openAIApiKey: openAIApiKey,
       temperature: 0,
     },
@@ -21,7 +22,7 @@ export function getOpenAi() {
 export function getChatOpenAi() {
   return new ChatOpenAI(
     {
-      // modelName: 'gpt-4-0613',
+      modelName: modelName,
       openAIApiKey: openAIApiKey,
     },
     {
