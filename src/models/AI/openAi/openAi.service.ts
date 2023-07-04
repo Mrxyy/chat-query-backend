@@ -1,15 +1,15 @@
 import { defaultScope, fxTepmlate } from './../../../utils/prompts/reactLive';
 import { OpenAI } from 'langchain/llms/openai';
-import { PromptTemplate } from 'langchain/prompts';
-import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
+// import { PromptTemplate } from 'langchain/prompts';
+// import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 
-import { APIChain } from 'langchain/chains';
+// import { APIChain } from 'langchain/chains';
 
 import { DataSource } from 'typeorm';
 import { SqlDatabase } from 'langchain/sql_db';
-import { createSqlAgent, SqlToolkit } from 'langchain/agents';
-import { SqlDatabaseChain } from 'langchain/chains';
-import { at, get, nth } from 'lodash';
+import { createSqlAgent, SqlToolkit } from 'langchain/agents/toolkits/sql';
+// import { SqlDatabaseChain } from 'langchain/chains';
+import { get, nth } from 'lodash';
 import { Tool } from 'langchain/tools';
 import {
   disableConstraints,
@@ -17,6 +17,7 @@ import {
 } from 'src/utils/knex/executeSQLWithDisabledForeignKeys';
 import { GET_COMPONENT_BY_DATA } from 'src/utils/prompts/reactLive';
 import { extractCodeBlocks } from 'src/utils/parse/getCode';
+import { getFunctionCodeChain } from 'src/utils/prompts/getFunction';
 export const openAIApiKey = process.env['OPEN_AI_API_KEY'];
 
 console.log(Tool);
@@ -128,6 +129,17 @@ If the question does not seem related to the database, just return "I don't know
     });
     return {
       code: extractCodeBlocks(result.text)[0],
+    };
+  }
+
+  async getFunctionCode(data: Record<string, any>, need: string) {
+    const result = await getFunctionCodeChain.call({
+      data: JSON.stringify(data),
+      need,
+    });
+    console.log(result.text);
+    return {
+      code: result.text,
     };
   }
 }

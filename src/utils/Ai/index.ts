@@ -24,6 +24,7 @@ export function getChatOpenAi() {
     {
       modelName: modelName,
       openAIApiKey: openAIApiKey,
+      temperature: 0,
     },
     {
       basePath: 'https://chat-query-backend.netlify.app/api/openai/v1',
