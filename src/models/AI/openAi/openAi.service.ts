@@ -127,6 +127,7 @@ If the question does not seem related to the database, just return "I don't know
       scope: defaultScope,
       fxTepmlate: fxTepmlate,
     });
+
     return {
       code: extractCodeBlocks(result.text)[0],
     };
@@ -137,7 +138,7 @@ If the question does not seem related to the database, just return "I don't know
       data: JSON.stringify(data),
       need,
     });
-    console.log(result.text);
+
     return {
       code: result.text,
     };

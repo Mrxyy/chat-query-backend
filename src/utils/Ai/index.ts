@@ -5,6 +5,7 @@ config();
 
 export const openAIApiKey = process.env['OPEN_AI_API_KEY'];
 export const modelName = process.env['MODEL_NAME'];
+export const basePath = process.env['BASE_URL'];
 
 export function getOpenAi() {
   return new OpenAI(
@@ -14,7 +15,7 @@ export function getOpenAi() {
       temperature: 0,
     },
     {
-      basePath: 'https://chat-query-backend.netlify.app/api/openai/v1',
+      basePath: basePath,
     },
   );
 }
@@ -27,7 +28,7 @@ export function getChatOpenAi() {
       temperature: 0,
     },
     {
-      basePath: 'https://chat-query-backend.netlify.app/api/openai/v1',
+      basePath: basePath,
     },
   );
 }
