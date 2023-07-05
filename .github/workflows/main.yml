@@ -24,3 +24,9 @@ jobs:
           context: .
           push: true
           tags: jadenxiong/chat-query-backend:latest
+        env:
+          OPEN_AI_API_KEY: ${{ secrets.OPEN_AI_API_KEY }}
+          MODEL_NAME: ${{ secrets.MODEL_NAME }}
+          BASE_URL: ${{ secrets.BASE_URL }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PORT: ${{ secrets.DB_PORT }}
