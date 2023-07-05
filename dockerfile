@@ -6,7 +6,21 @@ WORKDIR /usr/src/app
 # 复制 package.json 和 package-lock.json 文件到工作目录
 COPY package*.json ./
 COPY pnpm-lock.yaml ./
-COPY .env ./
+
+ARG OPEN_AI_API_KEY
+ENV OPEN_AI_API_KEY $OPEN_AI_API_KEY
+
+ARG MODEL_NAME
+ENV MODEL_NAME $MODEL_NAME
+
+ARG BASE_URL
+ENV BASE_URL $BASE_URL
+
+ARG DB_HOST
+ENV DB_HOST $DB_HOST
+
+ARG DB_PORT
+ENV DB_PORT $DB_PORT
 
 # 安装项目依赖
 RUN npm i -g pnpm
