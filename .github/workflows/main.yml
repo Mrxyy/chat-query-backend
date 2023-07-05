@@ -9,8 +9,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Print OPEN_AI_API_KEY secret
-        run: echo ${{ secrets.OPEN_AI_API_KEY }}
       - name: Install dependencies & build Nest app
         run: |
           npm install
@@ -27,8 +25,8 @@ jobs:
           push: true
           tags: jadenxiong/chat-query-backend:latest
           build-args: |
-             OPEN_AI_API_KEY=${{ secrets.OPEN_AI_API_KEY }}
-             MODEL_NAME=${{ secrets.MODEL_NAME }}
-             BASE_URL=${{ secrets.BASE_URL }}
-             DB_HOST=${{ secrets.DB_HOST }}
-             DB_PORT=${{ secrets.DB_PORT }}
+            OPEN_AI_API_KEY=${{ secrets.OPEN_AI_API_KEY }}
+            MODEL_NAME=${{ secrets.MODEL_NAME }}
+            BASE_URL=${{ secrets.BASE_URL }}
+            DB_HOST=${{ secrets.DB_HOST }}
+            DB_PORT=${{ secrets.DB_PORT }}
