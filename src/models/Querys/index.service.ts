@@ -1,15 +1,14 @@
 import { Schema } from './../Schema/schema.model';
-import { Controller, Injectable, Post } from '@nestjs/common';
-import { KnexContainer, Kenx } from 'src/utils/knex';
+import { Injectable } from '@nestjs/common';
+import { KnexContainer } from 'src/utils/knex';
 import { Query } from './Query.model';
 import { InjectModel } from '@nestjs/sequelize';
 import { DB } from './DB.model';
 import knex from 'knex';
 import { generateDbdiagramDsl } from 'src/utils/knex/DB2DBML';
-import { each, get, map, pick } from 'lodash';
+import { get, pick } from 'lodash';
 import { Knex } from 'knex';
 import exportSQL from 'src/utils/knex/export-sql';
-import { readFileSync } from 'fs';
 import { executeSQLWithDisabledForeignKeys } from 'src/utils/knex/executeSQLWithDisabledForeignKeys';
 
 function pureCode(raw: string): string {
@@ -289,6 +288,17 @@ export class QueriesService {
     return this.QueryModel.create(
       pick(query, 'name', 'content', 'schemaId', 'DbID'),
     );
+  }
+  async updateQuery(queryId: string, functions: string) {
+    const query = await this.QueryModel.findByPk(queryId);
+    // query.content
+    const content: any = query.content;
+    return await query.update({
+      content: {
+        ...content,
+        functions,
+      },
+    });
   }
   async getQueries(schemaId: Pick<Schema, 'id'>) {
     return this.QueryModel.findAll({

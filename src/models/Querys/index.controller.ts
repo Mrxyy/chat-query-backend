@@ -6,6 +6,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Query as QueryValue,
 } from '@nestjs/common';
 import { QueriesService } from './index.service';
@@ -25,6 +26,11 @@ export class QueriesController {
   @Post('/add')
   addQuery(@Body() query: Query) {
     return this.service.addQuery(query);
+  }
+
+  @Put('/:queryId')
+  updateQuery(@Param('queryId') queryId, @Body('functions') functions: string) {
+    return this.service.updateQuery(queryId, functions);
   }
 
   @Post('/getDbDBML')
