@@ -17,7 +17,7 @@ import {
 } from 'src/utils/knex/executeSQLWithDisabledForeignKeys';
 import { GET_COMPONENT_BY_DATA } from 'src/utils/prompts/reactLive';
 import { extractCodeBlocks } from 'src/utils/parse/getCode';
-import { getFunctionCodeChain } from 'src/utils/prompts/getFunction';
+import { GET_FUNCTION_CODE_CHAIN } from 'src/utils/prompts/getFunction';
 export const openAIApiKey = process.env['OPEN_AI_API_KEY'];
 
 console.log(Tool);
@@ -134,7 +134,7 @@ If the question does not seem related to the database, just return "I don't know
   }
 
   async getFunctionCode(data: Record<string, any>, need: string) {
-    const result = await getFunctionCodeChain.call({
+    const result = await GET_FUNCTION_CODE_CHAIN.call({
       data: JSON.stringify(data),
       need,
     });

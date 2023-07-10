@@ -44,7 +44,7 @@ export class QueriesController {
   }
 
   @Post('/testConnectDb')
-  testConnectDb(@Body() dbConfig: Pick<DB, 'config'>) {
+  testConnectDb(@Body() dbConfig: DB['config']) {
     return this.service.testConnectDb(dbConfig);
   }
 
@@ -63,22 +63,22 @@ export class QueriesController {
   }
 
   @Delete('/:queryId')
-  deleteQuery(@Param('queryId') queryId: Pick<Query, 'id'>) {
+  deleteQuery(@Param('queryId') queryId: Query['id']) {
     return this.service.deteteQuery(queryId);
   }
 
   @Get('/:schemaId/queries')
-  getQueries(@Param('schemaId') schemaId: Pick<Schema, 'id'>) {
+  getQueries(@Param('schemaId') schemaId: Schema['id']) {
     return this.service.getQueries(schemaId);
   }
 
   @Get('/:schemaId/DbConnect')
-  getSchemaAllDb(@Param('schemaId') schemaId: Pick<Schema, 'id'>) {
+  getSchemaAllDb(@Param('schemaId') schemaId: Schema['id']) {
     return this.service.getSchemaAllDb(schemaId);
   }
 
   @Post('/:schemaId')
-  create(@Param('schemaId') schemaId: Pick<Schema, 'id'>) {
+  create(@Param('schemaId') schemaId: Schema['id']) {
     return this.service.createQuery(schemaId);
   }
 }

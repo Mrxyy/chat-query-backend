@@ -101,7 +101,7 @@ export class QueriesService {
       };
     }
   }
-  async createQuery(schemaId: Pick<Schema, 'id'>): Promise<Query> {
+  async createQuery(schemaId: Schema['id']): Promise<Query> {
     return this.QueryModel.create({
       schemaId,
       name: 'unknown',
@@ -210,14 +210,14 @@ export class QueriesService {
     };
     return this.DbModel.create(saveConfig);
   }
-  async getSchemaAllDb(schemaId: Pick<Schema, 'id'>): Promise<DB[]> {
+  async getSchemaAllDb(schemaId: Schema['id']): Promise<DB[]> {
     return this.DbModel.findAll({
       where: {
         schemaId,
       },
     });
   }
-  async deleteDb(id: Pick<DB, 'id'>): Promise<{ id: Pick<DB, 'id'> }> {
+  async deleteDb(id: DB['id']): Promise<{ id: DB['id'] }> {
     await this.DbModel.destroy({
       where: {
         id,
@@ -225,8 +225,8 @@ export class QueriesService {
     });
     return { id };
   }
-  async testConnectDb(dbConfig: Pick<DB, 'config'>) {
-    const { client, host, port, user, password, database }: any = dbConfig;
+  async testConnectDb(dbConfig: DB['config']) {
+    const { client, host, port, user, password, database } = dbConfig as any;
     const db: Knex = this.knex.create({
       client: client,
       asyncStackTraces: true,
@@ -300,14 +300,14 @@ export class QueriesService {
       },
     });
   }
-  async getQueries(schemaId: Pick<Schema, 'id'>) {
+  async getQueries(schemaId: Schema['id']) {
     return this.QueryModel.findAll({
       where: {
         schemaId,
       },
     });
   }
-  async deteteQuery(queryId: Pick<Query, 'id'>) {
+  async deteteQuery(queryId: Query['id']) {
     return this.QueryModel.destroy({
       where: {
         id: queryId,

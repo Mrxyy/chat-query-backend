@@ -17,4 +17,4 @@ const prompt = PromptTemplate.fromTemplate(
   `,
 );
 
-export const getFunctionCodeChain = new LLMChain({ llm: model, prompt });
+export const GET_FUNCTION_CODE_CHAIN = new LLMChain({ llm: model, prompt });

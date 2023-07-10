@@ -38,7 +38,7 @@ export class Schema extends Model {
   @Column({
     type: DataType.JSON,
   })
-  graph: string;
+  graph: typeof DataType.JSON;
 
   @Comment('模型描述')
   @AllowNull(true)

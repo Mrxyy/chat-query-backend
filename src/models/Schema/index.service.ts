@@ -15,9 +15,22 @@ export class SchemaService {
     @InjectModel(SchemaLog) private SchemaLogModel: typeof SchemaLog,
   ) {}
   async addSchema(body: Pick<Schema, 'name' | 'graph'>): Promise<Schema> {
-    return await executeRes(() => this.SchemaModel.create(body));
+    const { tableDict, linkDict } = (body.graph as any) || {
+      tableDict: {},
+      linkDict: {},
+    };
+    const dbml = export_dbml(tableDict, linkDict);
+    const description = await GET_SCHEMA_INFO.run(dbml);
+
+    return await executeRes(() =>
+      this.SchemaModel.create({ ...body, description }),
+    );
   }
   async findSchema(id: string): Promise<Schema> {
+    const schema = await this.SchemaModel.findByPk(id);
+    if (!schema.description) {
+      return await this.updateSchema(schema.id, schema.graph, schema.name);
+    }
     return await executeRes(() => this.SchemaModel.findByPk(id));
   }
 
@@ -26,7 +39,7 @@ export class SchemaService {
   }
 
   async removeSchema(id: string): Promise<{
-    id: Pick<Schema, 'id'>;
+    id: Schema['id'];
   }> {
     return executeRes(async () => {
       const num = await this.SchemaModel.destroy({
@@ -40,8 +53,8 @@ export class SchemaService {
   }
   async updateSchema(
     id: string,
-    graph: Pick<Schema, 'graph'>,
-    name: Pick<Schema, 'name'>,
+    graph: Schema['graph'],
+    name: Schema['name'],
   ): Promise<Schema> {
     const schema = await this.SchemaModel.findByPk(id);
 
