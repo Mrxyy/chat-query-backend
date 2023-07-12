@@ -138,7 +138,6 @@ If the question does not seem related to the database, just return "I don't know
       data: JSON.stringify(data),
       need,
     });
-
     return {
       code: result.text,
     };

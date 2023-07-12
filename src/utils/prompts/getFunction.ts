@@ -9,7 +9,7 @@ const prompt = PromptTemplate.fromTemplate(
     {data}。
   需求:
     {need}。
-  请按照需求生成的代码,并且按照以下模版中的xml标签中的内容进行解析,并替换标签中的内容作为最后结果输出:
+  请按照需求生成代码之后,将结果按照以下模版中的标签中的内容进行分析并且替换模版中标签的内容(必须保留标签)作为最后结果输出:
     <FunctionDescription>该函数描述说明</FunctionDescription>
     <FunctionName>函数名称</FunctionName>
     <FunctionCode>函数代码</FunctionCode>
