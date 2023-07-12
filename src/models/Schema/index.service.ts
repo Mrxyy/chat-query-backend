@@ -15,16 +15,7 @@ export class SchemaService {
     @InjectModel(SchemaLog) private SchemaLogModel: typeof SchemaLog,
   ) {}
   async addSchema(body: Pick<Schema, 'name' | 'graph'>): Promise<Schema> {
-    const { tableDict, linkDict } = (body.graph as any) || {
-      tableDict: {},
-      linkDict: {},
-    };
-    const dbml = export_dbml(tableDict, linkDict);
-    const description = await GET_SCHEMA_INFO.run(dbml);
-
-    return await executeRes(() =>
-      this.SchemaModel.create({ ...body, description }),
-    );
+    return await executeRes(() => this.SchemaModel.create(body));
   }
   async findSchema(id: string): Promise<Schema> {
     const schema = await this.SchemaModel.findByPk(id);
