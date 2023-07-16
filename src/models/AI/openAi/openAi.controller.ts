@@ -13,4 +13,8 @@ export class OpenAIController {
   Code(@Body('data') data, @Body('need') need) {
     return this.server.getFunctionCode(data, need);
   }
+  @Post('checkQuery')
+  checkQuery(@Body('messageList') messageList) {
+    return this.server.checkQuery(messageList);
+  }
 }

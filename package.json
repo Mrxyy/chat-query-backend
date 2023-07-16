@@ -29,14 +29,15 @@
     "@types/sequelize": "^4.28.15",
     "dotenv": "^16.1.4",
     "knex": "^2.4.2",
-    "langchain": "^0.0.102",
+    "langchain": "^0.0.109",
     "lodash": "^4.17.21",
     "mysql2": "^3.3.3",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
     "sequelize": "^6.32.0",
     "sequelize-typescript": "^2.1.5",
-    "typeorm": "^0.3.16"
+    "typeorm": "^0.3.16",
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",
