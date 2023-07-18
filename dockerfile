@@ -24,7 +24,7 @@ ENV DB_PORT $DB_PORT
 
 # 安装项目依赖
 RUN npm i -g pnpm
-RUN npm i
+RUN pnpm i
 
 # 复制应用程序源代码到工作目录
 COPY dist ./dist
