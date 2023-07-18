@@ -149,7 +149,7 @@ If the question does not seem related to the database, just return "I don't know
     const result = await GET_CHECK_RESULT.call({
       messageList: JSON.stringify(
         messageList.map((v) => ({
-          [v.role]: get(v, 'content') || get(v, 'function_call'),
+          [v.role]: get(v, 'content') || get(v, 'function_call.arguments'),
         })),
       ),
     });
