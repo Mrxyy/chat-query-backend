@@ -20,7 +20,7 @@ export class SchemaService {
   async findSchema(id: string): Promise<Schema> {
     const schema = await this.SchemaModel.findByPk(id);
     if (!schema.description) {
-      return await this.updateSchema(schema.id, schema.graph, schema.name);
+      this.updateSchema(schema.id, schema.graph, schema.name);
     }
     return await executeRes(() => this.SchemaModel.findByPk(id));
   }
