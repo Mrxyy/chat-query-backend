@@ -182,7 +182,7 @@ export class QueriesService {
       );
       const { client, host, port, user, password, database, newDbName }: any =
         dbConfig.config;
-      if (ddl) {
+      if (ddl && get(dbConfig.config, 'newDbName')) {
         await this.createDatabaseAndExecuteDDL(
           {
             client: client,
@@ -205,7 +205,11 @@ export class QueriesService {
       ...dbConfig,
       config: {
         ...dbConfig.config,
-        database: get(dbConfig.config, 'newDbName'),
+        database: get(
+          dbConfig.config,
+          'newDbName',
+          get(dbConfig.config, 'newDbName', get(dbConfig.config, 'database')),
+        ),
       },
     };
     return this.DbModel.create(saveConfig);
