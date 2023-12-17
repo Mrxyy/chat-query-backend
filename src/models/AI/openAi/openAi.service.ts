@@ -123,12 +123,14 @@ If the question does not seem related to the database, just return "I don't know
   }
 
   async getReactLiveCode(props: Record<string, any>, need: string) {
+    console.time('start');
     const result = await GET_COMPONENT_BY_DATA.call({
       props: JSON.stringify(props),
       need,
       scope: defaultScope,
       fxTepmlate: fxTepmlate,
     });
+    console.timeEnd('start');
 
     return {
       code: extractCodeBlocks(result.text)[0],

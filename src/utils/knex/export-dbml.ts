@@ -51,7 +51,7 @@ const export_dbml = (
     }),
   };
 
-  const database = Parser.parse(combined as any, 'json');
+  const database = new Parser(undefined).parse(combined as any, 'json');
   const dbml = ModelExporter.export(database, 'dbml', false);
   return dbml;
 };

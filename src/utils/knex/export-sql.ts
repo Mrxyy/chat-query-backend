@@ -51,7 +51,7 @@ const exportSQL = (
     }),
   };
 
-  const database = Parser.parse(combined as any, 'json');
+  const database = new Parser(undefined).parse(combined as any, 'json');
   const dbml = ModelExporter.export(database, 'dbml', false);
   const sql = exporter.export(dbml, databaseType);
   // console.log(sql);
