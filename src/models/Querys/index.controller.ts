@@ -19,8 +19,8 @@ export class QueriesController {
   constructor(private service: QueriesService) {}
 
   @Post('/querySql')
-  executeQuery(@Body() pramas) {
-    return this.service.executeQuery(pramas);
+  executeQuery(@Body() params) {
+    return this.service.executeQuery(params);
   }
 
   @Post('/add')
@@ -29,8 +29,12 @@ export class QueriesController {
   }
 
   @Put('/:queryId')
-  updateQuery(@Param('queryId') queryId, @Body('functions') functions: string) {
-    return this.service.updateQuery(queryId, functions);
+  updateQuery(
+    @Param('queryId') queryId,
+    @Body('functions') functions,
+    @Body('option') option,
+  ) {
+    return this.service.updateQuery(queryId, functions, option);
   }
 
   @Post('/getDbDBML')
@@ -64,7 +68,7 @@ export class QueriesController {
 
   @Delete('/:queryId')
   deleteQuery(@Param('queryId') queryId: Query['id']) {
-    return this.service.deteteQuery(queryId);
+    return this.service.deleteQuery(queryId);
   }
 
   @Get('/:schemaId/queries')

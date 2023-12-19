@@ -293,14 +293,27 @@ export class QueriesService {
       pick(query, 'name', 'content', 'schemaId', 'DbID'),
     );
   }
-  async updateQuery(queryId: string, functions: string) {
+  async updateQuery(
+    queryId: string,
+    functions: string,
+    option: {
+      customComponentsHistory?: Record<
+        string,
+        {
+          code: string;
+          type: string;
+        }
+      >;
+    },
+  ) {
     const query = await this.QueryModel.findByPk(queryId);
     // query.content
     const content: any = query.content;
     return await query.update({
       content: {
         ...content,
-        functions,
+        functions: functions || content.functions,
+        option: option || content.option,
       },
     });
   }
@@ -311,7 +324,7 @@ export class QueriesService {
       },
     });
   }
-  async deteteQuery(queryId: Query['id']) {
+  async deleteQuery(queryId: Query['id']) {
     return this.QueryModel.destroy({
       where: {
         id: queryId,
