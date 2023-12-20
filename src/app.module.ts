@@ -6,6 +6,7 @@ import { Kenx } from './utils/knex';
 import { QueriesModel } from './models/Querys';
 import { OpenAIModule } from './models/AI/openAi';
 import { config } from 'dotenv';
+import { EventsModule } from './models/events/events.module';
 config();
 export const dbHost = process.env['DB_HOST'];
 export const dbPort = Number(process.env['DB_PORT']);
@@ -24,7 +25,14 @@ const env = [
 ];
 
 @Module({
-  imports: [...env, SChemaModel, QueriesModel, Kenx, OpenAIModule],
+  imports: [
+    ...env,
+    SChemaModel,
+    QueriesModel,
+    Kenx,
+    OpenAIModule,
+    EventsModule,
+  ],
 })
 export class AppModule {
   constructor(sequelize: Sequelize) {
