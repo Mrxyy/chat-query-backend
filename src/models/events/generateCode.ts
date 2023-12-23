@@ -1,7 +1,6 @@
 import { assemblePrompt } from './prompts';
 import { streamingOpenAIResponses } from './llm';
 import { mockComletion } from './mock';
-import * as WebSocket from 'ws';
 
 export interface IGenerateCodeParams {
   generationType: string;
@@ -19,10 +18,17 @@ export interface IGenerateCodeParams {
 
 export async function streamGenerateCode(
   params: IGenerateCodeParams,
-  socket: WebSocket,
+  socket: {
+    push?: (v: string) => any;
+    send?: (v: string) => any;
+  },
 ) {
   function noticeHost(data) {
-    socket.send(JSON.stringify(data));
+    if (socket.push) {
+      socket.push(`${JSON.stringify(data)}\n`);
+    } else if (socket.send) {
+      socket.send(JSON.stringify(data));
+    }
   }
   const generated_code_config = params['generatedCodeConfig'];
   let prompt_messages;

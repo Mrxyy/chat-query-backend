@@ -6,10 +6,10 @@ export async function streamingOpenAIResponses(messages, callback, params) {
     return '';
   }
   const openai = new OpenAI({
-    apiKey: params.openAiApiKey || process.env['OPENAI_API_KEY'], // defaults to process.env["OPENAI_API_KEY"]
+    apiKey: params.openAiApiKey || process.env['OPEN_AI_API_KEY'], // defaults to process.env["OPENAI_API_KEY"]
     baseURL:
       params.openAiBaseURL ||
-      process.env['OPENAI_BASE_URL'] ||
+      process.env['BASE_URL'] ||
       'https://api.openai.com/v1',
   });
 

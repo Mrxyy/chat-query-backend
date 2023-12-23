@@ -1,4 +1,3 @@
-import { async } from 'rxjs';
 import { defaultScope, fxTepmlate } from './../../../utils/prompts/reactLive';
 import { OpenAI } from 'langchain/llms/openai';
 // import { PromptTemplate } from 'langchain/prompts';
