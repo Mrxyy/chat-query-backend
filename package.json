@@ -21,14 +21,15 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "dbml-core": "^3.0.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/sequelize": "^9.0.2",
     "@types/sequelize": "^4.28.15",
+    "dbml-core": "^3.0.0",
     "dotenv": "^16.1.4",
     "knex": "^2.4.2",
+    "knex-schema-inspector": "^3.1.0",
     "langchain": "^0.0.149",
     "lodash": "^4.17.21",
     "mysql2": "^3.3.3",
