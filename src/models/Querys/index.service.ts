@@ -8,8 +8,8 @@ import knex from 'knex';
 import { generateDbdiagramDsl } from 'src/utils/knex/DB2DBML';
 import { get, pick } from 'lodash';
 import { Knex } from 'knex';
-import exportSQL from 'src/utils/knex/export-sql';
 import { executeSQLWithDisabledForeignKeys } from 'src/utils/knex/executeSQLWithDisabledForeignKeys';
+import exportDsl from 'src/utils/knex/export-dsl';
 
 function pureCode(raw: string): string {
   const codeRegex = /```.*\n([\s\S]*?)\n```/;
@@ -175,11 +175,11 @@ export class QueriesService {
         tableDict: {},
         linkDict: {},
       });
-      const ddl = exportSQL(
+      const ddl = exportDsl(
         tableDict,
         linkDict,
         // get(dbConfig, 'config.newDbType'),
-      );
+      ).split(/\n\s*\n/);
       const { client, host, port, user, password, database, newDbName }: any =
         dbConfig.config;
       if (ddl && get(dbConfig.config, 'newDbName')) {

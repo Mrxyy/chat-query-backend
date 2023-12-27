@@ -4,9 +4,8 @@ import { InjectModel } from '@nestjs/sequelize';
 import { executeRes } from 'src/utils/response/sequeilze';
 import { SchemaLog } from './SchemaLog.model';
 import { get, omit } from 'lodash';
-import { async } from 'rxjs';
-import export_dbml from 'src/utils/knex/export-dbml';
 import { GET_SCHEMA_INFO } from 'src/utils/prompts/schema';
+import exportDsl from 'src/utils/knex/export-dsl';
 
 @Injectable()
 export class SchemaService {
@@ -59,7 +58,7 @@ export class SchemaService {
       linkDict: {},
     };
 
-    const dbml = export_dbml(tableDict, linkDict);
+    const dbml = exportDsl(tableDict, linkDict, 'dbml');
 
     const description = await GET_SCHEMA_INFO.run(dbml);
 

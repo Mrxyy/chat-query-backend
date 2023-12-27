@@ -7,7 +7,7 @@ import { readFileSync, writeFileSync } from 'fs';
  * @param [databaseType=postgres] - The type of database you want to export to.
  * @returns dbml string.
  */
-const export_dbml = (
+const exportDsl = (
   tableDict: any,
   linkDict: any,
   databaseType: 'postgres' | 'mysql' | 'dbml' | 'mssql' | 'json' = 'mysql',
@@ -17,11 +17,16 @@ const export_dbml = (
     note: '',
     tables: Object.values(tableDict || {}).map((table: any) => {
       return {
+        ...table,
         name: table.name,
         note: table.note,
         fields: table.fields.map((field) => {
           return {
             ...field,
+            dbdefault: {
+              type: field.dbdefaultType,
+              value: field.dbdefault,
+            },
             type: {
               // To lower case because of typing 'BIGINT' with upper case and increment get wrong pg sql type when export
               type_name: field.type.toLowerCase(),
@@ -39,9 +44,9 @@ const export_dbml = (
         endpoints: ref.endpoints.map((endpoint) => {
           return {
             ...endpoint,
-            tableName: tableDict[endpoint.id].name,
+            tableName: tableDict[endpoint.table].name,
             fieldNames: [
-              tableDict[endpoint.id].fields.find(
+              tableDict[endpoint.table].fields.find(
                 (field) => field.id == endpoint.fieldId,
               ).name,
             ],
@@ -52,8 +57,8 @@ const export_dbml = (
   };
 
   const database = new Parser(undefined).parse(combined as any, 'json');
-  const dbml = ModelExporter.export(database, 'dbml', false);
+  const dbml = ModelExporter.export(database, databaseType, false);
   return dbml;
 };
 
-export default export_dbml;
+export default exportDsl;
