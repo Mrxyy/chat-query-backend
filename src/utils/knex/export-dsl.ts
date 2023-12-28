@@ -23,10 +23,12 @@ const exportDsl = (
         fields: table.fields.map((field) => {
           return {
             ...field,
-            dbdefault: {
-              type: field.dbdefaultType,
-              value: field.dbdefault,
-            },
+            dbdefault: !field.dbdefault
+              ? undefined
+              : {
+                  type: field.dbdefaultType,
+                  value: field.dbdefault,
+                },
             type: {
               // To lower case because of typing 'BIGINT' with upper case and increment get wrong pg sql type when export
               type_name: field.type.toLowerCase(),

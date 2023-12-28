@@ -140,6 +140,7 @@ export class QueriesService {
       ...dbConfig,
       connection: {
         ...dbConfig.connection,
+        password: get(dbConfig.connection, 'password'),
         database: dbName,
       },
     });

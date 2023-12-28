@@ -1,18 +1,19 @@
 import { forEach } from 'lodash';
 import exportDsl from '../../src/utils/knex/export-dsl';
 describe('dbmlExportSql', () => {
+  const json = {};
   forEach(
     {
       mysql:
-        "CREATE TABLE `posts` (\n  `id` integer PRIMARY KEY DEFAULT undefined,\n  `title` varchar(255) DEFAULT undefined,\n  `body` text DEFAULT 'direct' COMMENT 'Content of the post',\n  `user_id` integer DEFAULT undefined,\n  `status` varchar(255) DEFAULT undefined,\n  `created_at` timestamp DEFAULT undefined\n);\n",
-      json: '{\n  "schemas": [\n    {\n      "name": "public",\n      "note": "Default Public Schema",\n      "tables": [\n        {\n          "name": "posts",\n          "alias": null,\n          "note": null,\n          "fields": [\n            {\n              "name": "id",\n              "type": {\n                "type_name": "integer",\n                "args": null\n              },\n              "pk": true,\n              "note": null,\n              "dbdefault": {}\n            },\n            {\n              "name": "title",\n              "type": {\n                "type_name": "varchar",\n                "args": null\n              },\n              "note": null,\n              "dbdefault": {}\n            },\n            {\n              "name": "body",\n              "type": {\n                "type_name": "text",\n                "args": null\n              },\n              "note": "Content of the post",\n              "dbdefault": {\n                "type": "string",\n                "value": "direct"\n              }\n            },\n            {\n              "name": "user_id",\n              "type": {\n                "type_name": "integer",\n                "args": null\n              },\n              "note": null,\n              "dbdefault": {}\n            },\n            {\n              "name": "status",\n              "type": {\n                "type_name": "varchar",\n                "args": null\n              },\n              "note": null,\n              "dbdefault": {}\n            },\n            {\n              "name": "created_at",\n              "type": {\n                "type_name": "timestamp",\n                "args": null\n              },\n              "note": null,\n              "dbdefault": {}\n            }\n          ],\n          "indexes": []\n        }\n      ],\n      "enums": [],\n      "tableGroups": [],\n      "refs": []\n    }\n  ]\n}',
+        "CREATE TABLE `posts` (\n  `id` integer PRIMARY KEY,\n  `title` varchar(255),\n  `body` text DEFAULT 'direct' COMMENT 'Content of the post',\n  `user_id` integer,\n  `status` varchar(255),\n  `created_at` timestamp\n);\n",
+      json: '{\n  "schemas": [\n    {\n      "name": "public",\n      "note": "Default Public Schema",\n      "tables": [\n        {\n          "name": "posts",\n          "alias": null,\n          "note": null,\n          "fields": [\n            {\n              "name": "id",\n              "type": {\n                "type_name": "integer",\n                "args": null\n              },\n              "pk": true,\n              "note": null\n            },\n            {\n              "name": "title",\n              "type": {\n                "type_name": "varchar",\n                "args": null\n              },\n              "note": null\n            },\n            {\n              "name": "body",\n              "type": {\n                "type_name": "text",\n                "args": null\n              },\n              "note": "Content of the post",\n              "dbdefault": {\n                "type": "string",\n                "value": "direct"\n              }\n            },\n            {\n              "name": "user_id",\n              "type": {\n                "type_name": "integer",\n                "args": null\n              },\n              "note": null\n            },\n            {\n              "name": "status",\n              "type": {\n                "type_name": "varchar",\n                "args": null\n              },\n              "note": null\n            },\n            {\n              "name": "created_at",\n              "type": {\n                "type_name": "timestamp",\n                "args": null\n              },\n              "note": null\n            }\n          ],\n          "indexes": []\n        }\n      ],\n      "enums": [],\n      "tableGroups": [],\n      "refs": []\n    }\n  ]\n}',
       postgres:
-        'CREATE TABLE "posts" (\n  "id" integer PRIMARY KEY DEFAULT undefined,\n  "title" varchar DEFAULT undefined,\n  "body" text DEFAULT \'direct\',\n  "user_id" integer DEFAULT undefined,\n  "status" varchar DEFAULT undefined,\n  "created_at" timestamp DEFAULT undefined\n);\n\nCOMMENT ON COLUMN "posts"."body" IS \'Content of the post\';\n',
-      dbml: 'Table "posts" {\n  "id" integer [pk, default: ]\n  "title" varchar [default: ]\n  "body" text [default: "direct", note: \'Content of the post\']\n  "user_id" integer [default: ]\n  "status" varchar [default: ]\n  "created_at" timestamp [default: ]\n}\n',
+        'CREATE TABLE "posts" (\n  "id" integer PRIMARY KEY,\n  "title" varchar,\n  "body" text DEFAULT \'direct\',\n  "user_id" integer,\n  "status" varchar,\n  "created_at" timestamp\n);\n\nCOMMENT ON COLUMN "posts"."body" IS \'Content of the post\';\n',
+      dbml: 'Table "posts" {\n  "id" integer [pk]\n  "title" varchar\n  "body" text [default: "direct", note: \'Content of the post\']\n  "user_id" integer\n  "status" varchar\n  "created_at" timestamp\n}\n',
       mssql:
-        "CREATE TABLE [posts] (\n  [id] integer PRIMARY KEY DEFAULT (undefined),\n  [title] nvarchar(255) DEFAULT (undefined),\n  [body] text DEFAULT 'direct',\n  [user_id] integer DEFAULT (undefined),\n  [status] nvarchar(255) DEFAULT (undefined),\n  [created_at] timestamp DEFAULT (undefined)\n)\nGO\n\nEXEC sp_addextendedproperty\n@name = N'Column_Description',\n@value = 'Content of the post',\n@level0type = N'Schema', @level0name = 'dbo',\n@level1type = N'Table',  @level1name = 'posts',\n@level2type = N'Column', @level2name = 'body';\nGO\n",
+        "CREATE TABLE [posts] (\n  [id] integer PRIMARY KEY,\n  [title] nvarchar(255),\n  [body] text DEFAULT 'direct',\n  [user_id] integer,\n  [status] nvarchar(255),\n  [created_at] timestamp\n)\nGO\n\nEXEC sp_addextendedproperty\n@name = N'Column_Description',\n@value = 'Content of the post',\n@level0type = N'Schema', @level0name = 'dbo',\n@level1type = N'Table',  @level1name = 'posts',\n@level2type = N'Column', @level2name = 'body';\nGO\n",
     },
-    (res, v: 'mysql' | 'json' | 'postgres' | 'dbml' | 'mssql') => {
+    (value, v: 'mysql' | 'json' | 'postgres' | 'dbml' | 'mssql') => {
       test(v, () => {
         const res = exportDsl(
           {
@@ -276,8 +277,7 @@ describe('dbmlExportSql', () => {
           {},
           v,
         );
-        expect(res).toBe(res);
-        // console.log(v, '<===>', res);
+        expect(res).toBe(value);
       });
     },
   );
