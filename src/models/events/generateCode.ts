@@ -14,6 +14,7 @@ export interface IGenerateCodeParams {
   isTermOfServiceAccepted?: boolean;
   accessCode?: boolean;
   resultImage?: string;
+  llm?: 'Gemini' | 'OpenAi';
 }
 
 export async function streamGenerateCode(
@@ -94,6 +95,7 @@ export async function streamGenerateCode(
         {
           openAiApiKey: params.openAiApiKey,
           openAiBaseURL: params.openAiBaseURL,
+          llm: params.llm,
         },
       );
     } catch (e) {
