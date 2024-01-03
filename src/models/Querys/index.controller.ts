@@ -61,9 +61,10 @@ export class QueriesController {
   runQuery(
     @Param('queryId') queryID,
     @Body('params') params: Record<string, any>,
-    @QueryValue('type') type: 1 | undefined,
+    @QueryValue('type') type?: 1,
+    @QueryValue('function') fnName?: string,
   ) {
-    return this.service.runQuery(queryID, params, type);
+    return this.service.runQuery(queryID, params, type, fnName);
   }
 
   @Delete('/:queryId')

@@ -10,6 +10,7 @@ import { get, pick } from 'lodash';
 import { Knex } from 'knex';
 import { executeSQLWithDisabledForeignKeys } from 'src/utils/knex/executeSQLWithDisabledForeignKeys';
 import exportDsl from 'src/utils/knex/export-dsl';
+import { ExecutionService } from '../Execution/execution.service';
 
 function pureCode(raw: string): string {
   const codeRegex = /```.*\n([\s\S]*?)\n```/;
@@ -28,6 +29,7 @@ export class QueriesService {
     private knex: KnexContainer,
     @InjectModel(Query) private QueryModel: typeof Query,
     @InjectModel(DB) private DbModel: typeof DB,
+    private executor: ExecutionService,
   ) {}
   async executeQuery(pramas: {
     config: Record<string, any>;
@@ -332,25 +334,64 @@ export class QueriesService {
       },
     });
   }
-  async runQuery(queryId: string, params: Record<string, any>, type?) {
+  async runQuery(queryId: string, params: Record<string, any>, type?, fnName?) {
     const query = await this.QueryModel.findByPk(queryId);
-    console.log(query.content);
-    const data = await this.executeQuery({
+    console.log(query.content, this.executor);
+    let data: any = await this.executeQuery({
       config: params,
       execution: get(query.content, 'executions'),
       dbID: query.DbID,
     });
 
+    // if (type === '1') {
+
+    // }
+
+    const result = [];
+    if (fnName) {
+      const fnNameArr = JSON.parse(fnName);
+      // 假设 get 函数已经定义，并且 fnNameArr 数组也已经定义
+      const outerArray = get(data, 'data', []); // 使用假设的 get 函数获取数据
+      const fns = get(query.content, 'functions', []);
+
+      for (let index = 0; index < outerArray.length; index++) {
+        const item = outerArray[index];
+        const innerResult = [];
+
+        for (let i = 0; i < item.length; i++) {
+          const v = item[i];
+          const fn = fnNameArr[i];
+          if (fn) {
+            const item = await this.executor.executeJsFunction(
+              query.id,
+              `
+            ${fns[i]}
+            exports.handler = ${fn}
+                    `,
+              v[0],
+            );
+            innerResult.push([{ data: item }]);
+          } else {
+            innerResult.push(v);
+          }
+        }
+
+        // 将处理过的内部数组添加到结果中
+        result.push(innerResult);
+      }
+      data = {
+        data: result,
+      };
+    }
     if (type === '1') {
+      // data = result;
       let result = [];
-      console.log(data, 'data');
       get(data, 'data', []).map((item) => {
         item.map((v) => {
           result = result.concat(get(v, '0'));
         });
       });
-      console.log(result);
-      return result;
+      data = result;
     }
     return data;
   }
