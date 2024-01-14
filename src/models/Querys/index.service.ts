@@ -46,6 +46,7 @@ export class QueriesService {
       const { client, host, port, user, password, database }: any = get(
         dbConfig,
         'dataValues.config',
+        {},
       );
       db = await this.knex.create({
         client: client,
