@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { Schema } from './schema.model';
 import { InjectModel } from '@nestjs/sequelize';
-import { executeRes } from 'src/utils/response/sequeilze';
+import { executeRes } from '../../utils/response/sequeilze';
 import { SchemaLog } from './SchemaLog.model';
 import { get, omit } from 'lodash';
-import { GET_SCHEMA_INFO } from 'src/utils/prompts/schema';
-import exportDsl from 'src/utils/knex/export-dsl';
+import { GET_SCHEMA_INFO } from '../../utils/prompts/schema';
+import exportDsl from '../../utils/knex/export-dsl';
 
 @Injectable()
 export class SchemaService {

@@ -7,6 +7,7 @@ import { QueriesModel } from './models/Querys';
 import { OpenAIModule } from './models/AI/openAi';
 import { config } from 'dotenv';
 import { EventsModule } from './models/events/events.module';
+import { WidgetsModule } from './models/widgets';
 config();
 export const dbHost = process.env['DB_HOST'];
 export const dbPort = Number(process.env['DB_PORT']);
@@ -32,6 +33,7 @@ const env = [
     Kenx,
     OpenAIModule,
     EventsModule,
+    WidgetsModule,
   ],
 })
 export class AppModule {
