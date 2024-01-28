@@ -18,7 +18,7 @@ const zodSchema = z.object({
       '你现在是用户,下一次你将输入什么内容(中文)保证上面你最后一条记录中的需求能被正确的被理解。',
     ),
 });
-const prompt = ChatPromptTemplate.fromPromptMessages([
+const prompt = ChatPromptTemplate.fromMessages([
   SystemMessagePromptTemplate.fromTemplate(`沟通记录:\n
     {messageList}
   `),
@@ -28,7 +28,9 @@ const prompt = ChatPromptTemplate.fromPromptMessages([
   ),
 ]);
 
-export const GET_CHECK_RESULT = createStructuredOutputChainFromZod(zodSchema, {
+export const GET_CHECK_RESULT: ReturnType<
+  typeof createStructuredOutputChainFromZod
+> = createStructuredOutputChainFromZod(zodSchema, {
   llm: model,
   prompt,
 });

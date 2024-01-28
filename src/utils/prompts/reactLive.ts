@@ -59,7 +59,7 @@ const Messages_3 = HumanMessagePromptTemplate.fromTemplate(
   `这是我传入的props:{props}。{need}`,
 );
 
-const prompt = ChatPromptTemplate.fromPromptMessages([
+const prompt = ChatPromptTemplate.fromMessages([
   Messages_1,
   Messages_2,
   Messages_3,
