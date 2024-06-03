@@ -2,7 +2,7 @@ name: Build and Push Docker Image
 on:
   push:
     branches:
-      - master
+      - fusionTeach
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -24,7 +24,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: jadenxiong/chat-query-backend:latest
+          tags: jadenxiong/chat-query-backend:fusionTeach
           build-args: |
             OPEN_AI_API_KEY=${{ secrets.OPEN_AI_API_KEY }}
             MODEL_NAME=${{ secrets.MODEL_NAME }}
