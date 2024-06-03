@@ -1,6 +1,5 @@
 import { config } from 'dotenv';
-import { ChatOpenAI } from 'langchain/chat_models/openai';
-import { OpenAI } from 'langchain/llms/openai';
+import { OpenAI, ChatOpenAI } from '@langchain/openai';
 config();
 
 export const openAIApiKey = process.env['OPEN_AI_API_KEY'];
@@ -12,7 +11,7 @@ export function getOpenAi() {
     {
       modelName: modelName,
       openAIApiKey: openAIApiKey,
-      temperature: 0,
+      temperature: 0.8,
     },
     {
       basePath: basePath,

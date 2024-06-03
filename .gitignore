@@ -36,3 +36,6 @@ lerna-debug.log*
 
 packages
 .env
+tsconfig.dev.json
+
+python

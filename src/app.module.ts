@@ -8,6 +8,10 @@ import { OpenAIModule } from './models/AI/openAi';
 import { config } from 'dotenv';
 import { EventsModule } from './models/events/events.module';
 import { WidgetsModule } from './models/widgets';
+import { FlowNodeModel } from './models/FlowNode';
+import { WorkFlowModel } from './models/Flow';
+import { functionCallTest } from './Example';
+
 config();
 export const dbHost = process.env['DB_HOST'];
 export const dbPort = Number(process.env['DB_PORT']);
@@ -22,6 +26,9 @@ const env = [
     database: 'chat_query',
     autoLoadModels: true,
     synchronize: true,
+    // logging: (sql) => {
+    // console.log(sql);
+    // },
   }),
 ];
 
@@ -34,10 +41,17 @@ const env = [
     OpenAIModule,
     EventsModule,
     WidgetsModule,
+    FlowNodeModel,
+    WorkFlowModel,
   ],
 })
 export class AppModule {
   constructor(sequelize: Sequelize) {
-    // console.log(sequelize, "sequelize实例")
+    // sequelize.sync({
+    //   logging: (sql) => {
+    //     console.log(sql.replace(sqlPrefix, ''));
+    //   },
+    // });
+    // (async () => {})();
   }
 }

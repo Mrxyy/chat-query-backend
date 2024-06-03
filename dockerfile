@@ -1,11 +1,13 @@
-FROM node:18
+FROM node:20
 
 # 设置工作目录
 WORKDIR /usr/src/app
 
 # 复制 package.json 和 package-lock.json 文件到工作目录
 COPY package*.json ./
-COPY pnpm-lock.yaml ./
+COPY ./scripts ./scripts
+RUN chmod -R 777 ./scripts
+ENV LD_LIBRARY_PATH "/opt/oracle/instantclient_19_23"
 
 ARG OPEN_AI_API_KEY
 ENV OPEN_AI_API_KEY $OPEN_AI_API_KEY
@@ -33,4 +35,4 @@ COPY dist ./dist
 EXPOSE 3001
 
 # 启动命令
-CMD [ "npm", "run", "start:prod" ]
+CMD [ "./scripts/start.sh" ]

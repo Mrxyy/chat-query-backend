@@ -18,7 +18,7 @@ export class SchemaService {
   }
   async findSchema(id: string): Promise<Schema> {
     const schema = await this.SchemaModel.findByPk(id);
-    if (!schema.description) {
+    if (!schema?.description) {
       this.updateSchema(schema.id, schema.graph, schema.name);
     }
     return await executeRes(() => this.SchemaModel.findByPk(id));
@@ -60,7 +60,12 @@ export class SchemaService {
 
     const dbml = exportDsl(tableDict, linkDict, 'dbml');
 
-    const description = await GET_SCHEMA_INFO.run(dbml);
+    let description;
+    try {
+      description = (await GET_SCHEMA_INFO.invoke({ sql: dbml })).content;
+    } catch (e) {
+      description = dbml;
+    }
 
     return executeRes(() =>
       schema.update({

@@ -8,3 +8,5 @@ export async function executeRes(fx: () => any) {
   console.log('result', result, 'result');
   return result;
 }
+
+export type OmitModelType = 'UpdatedAt' | 'DeletedAt';

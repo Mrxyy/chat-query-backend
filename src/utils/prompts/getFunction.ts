@@ -1,8 +1,6 @@
-import { OpenAI } from 'langchain/llms/openai';
-import { PromptTemplate } from 'langchain/prompts';
-import { LLMChain } from 'langchain/chains';
-import { getOpenAi } from '../Ai';
-const model = getOpenAi();
+import { PromptTemplate } from '@langchain/core/prompts';
+import { getChatOpenAi } from '../Ai';
+const model = getChatOpenAi();
 
 const prompt = PromptTemplate.fromTemplate(
   `作为js代码编程专家，你需要分析我的需求，请你编写一个函数处理我的需求并返回我的需要的结果,这个是固定第一个入参：
@@ -16,5 +14,4 @@ const prompt = PromptTemplate.fromTemplate(
     <FunctionExample>函数实例</FunctionExample>
   `,
 );
-
-export const GET_FUNCTION_CODE_CHAIN = new LLMChain({ llm: model, prompt });
+export const GET_FUNCTION_CODE_CHAIN = prompt.pipe(model);

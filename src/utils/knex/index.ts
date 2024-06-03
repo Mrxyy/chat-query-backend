@@ -2,10 +2,33 @@ import { Global, Injectable, Module } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import knex, { Knex } from 'knex';
 import { get, set } from 'lodash';
+import * as oracledb from 'oracledb';
+import { config } from 'dotenv';
+config();
 
 @Injectable()
 export class KnexContainer {
   knexs = new Map();
+
+  static oracledbInit = false;
+
+  constructor() {
+    if (
+      process.platform in { darwin: true, linux: true } &&
+      !KnexContainer.oracledbInit
+    ) {
+      try {
+        oracledb.initOracleClient({
+          libDir:
+            process.env['LD_LIBRARY_PATH'] ||
+            process.env.HOME + '/Downloads/instantclient_19_8',
+        });
+        KnexContainer.oracledbInit = true;
+      } catch (e) {
+        console.log('无法使用oracle厚模式');
+      }
+    }
+  }
 
   create(config: Knex.Config, id?: string) {
     const db = knex(config);

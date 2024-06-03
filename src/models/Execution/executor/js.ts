@@ -38,7 +38,7 @@ async function jsExecutor(fileName: string, content: string, data: any) {
       Runtime: 'nodejs',
       Environment: {
         Variables: {
-          HELLO: 'world',
+          // HELLO: 'world',
         },
       },
       MemorySize: 512,

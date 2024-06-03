@@ -17,4 +17,12 @@ export class OpenAIController {
   checkQuery(@Body('messageList') messageList) {
     return this.server.checkQuery(messageList);
   }
+  @Post('getWidgetProps')
+  getWidgetProps(
+    @Body('code') code,
+    @Body('fn') fn,
+    @Body('requirements') requirements,
+  ) {
+    return this.server.getWidgetProps(code, fn, requirements);
+  }
 }

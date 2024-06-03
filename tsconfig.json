@@ -16,6 +16,10 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
-  }
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@dbml/core": ["./node_modules/dbml-core"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.md"]
 }

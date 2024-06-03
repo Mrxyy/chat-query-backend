@@ -1,9 +1,6 @@
 import { defaultScope, fxTepmlate } from './../../../utils/prompts/reactLive';
-import { OpenAI } from 'langchain/llms/openai';
 // import { PromptTemplate } from 'langchain/prompts';
 // import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
-
-// import { APIChain } from 'langchain/chains';
 
 import { DataSource } from 'typeorm';
 import { SqlDatabase } from 'langchain/sql_db';
@@ -18,7 +15,15 @@ import {
 import { GET_COMPONENT_BY_DATA } from 'src/utils/prompts/reactLive';
 import { extractCodeBlocks } from 'src/utils/parse/getCode';
 import { GET_FUNCTION_CODE_CHAIN } from 'src/utils/prompts/getFunction';
-import { GET_CHECK_RESULT } from 'src/utils/prompts/checkSql';
+import { GET_CHECK_RESULT, parser } from 'src/utils/prompts/checkSql';
+import { GET_WIDGET_PROPS, output } from 'src/utils/prompts/getWidgetsProps';
+import { GET_WIDGET_CODE, widgetOutput } from 'src/utils/prompts/getWidgetCode';
+import { getOpenAi } from 'src/utils/Ai';
+import {
+  RunnableLambda,
+  RunnableMap,
+  RunnablePassthrough,
+} from '@langchain/core/runnables';
 export const openAIApiKey = process.env['OPEN_AI_API_KEY'];
 
 console.log(Tool);
@@ -55,17 +60,7 @@ export class OpenAIService {
   }
 
   async run() {
-    const model = new OpenAI(
-      {
-        modelName: 'gpt-4-0613',
-        openAIApiKey: openAIApiKey,
-        temperature: 0,
-      },
-      {
-        basePath:
-          'https://chat-gpt-next-qwn676aj7-mrxyy.vercel.app/api/openai/v1/',
-      },
-    );
+    const model = getOpenAi();
 
     const datasource = new DataSource({
       type: 'mysql',
@@ -123,7 +118,7 @@ If the question does not seem related to the database, just return "I don't know
 
   async getReactLiveCode(props: Record<string, any>, need: string) {
     console.time('start');
-    const result = await GET_COMPONENT_BY_DATA.call({
+    const result = await GET_COMPONENT_BY_DATA.invoke({
       props: JSON.stringify(props),
       need,
       scope: defaultScope,
@@ -132,29 +127,57 @@ If the question does not seem related to the database, just return "I don't know
     console.timeEnd('start');
 
     return {
-      code: extractCodeBlocks(result.text)[0],
+      code: extractCodeBlocks(result.content)[0],
     };
   }
 
   async getFunctionCode(data: Record<string, any>, need: string) {
-    const result = await GET_FUNCTION_CODE_CHAIN.call({
+    const result = await GET_FUNCTION_CODE_CHAIN.invoke({
       data: JSON.stringify(data),
       need,
     });
     return {
-      code: result.text,
+      code: result.content,
+    };
+  }
+
+  async getWidgetProps(code: string, fn: string, requirements: string) {
+    const chain = GET_WIDGET_PROPS.pipe((v) =>
+      JSON.parse(v.content as string),
+    ).pipe(
+      RunnableMap.from({
+        widget: RunnablePassthrough,
+        updatedPropsCode: RunnableLambda.from(
+          async ({ props }) =>
+            (
+              await GET_WIDGET_CODE.invoke({
+                code: code,
+                props,
+                widgetOutput: widgetOutput,
+              })
+            ).content,
+        ),
+      }),
+    );
+    return {
+      data: chain.invoke({
+        code,
+        fn,
+        output: output,
+        requirements,
+      }),
     };
   }
 
   async checkQuery(messageList: any[]) {
-    const result = await GET_CHECK_RESULT.call({
+    const result = await GET_CHECK_RESULT.invoke({
       messageList: JSON.stringify(
         messageList.map((v) => ({
           [v.role]: get(v, 'content') || get(v, 'function_call.arguments'),
         })),
       ),
+      format_instructions: parser.getFormatInstructions(),
     });
-    console.log(result, 'result');
     return {
       ...result,
     };

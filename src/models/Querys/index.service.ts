@@ -6,11 +6,17 @@ import { InjectModel } from '@nestjs/sequelize';
 import { DB } from './DB.model';
 import knex from 'knex';
 import { generateDbdiagramDsl } from 'src/utils/knex/DB2DBML';
-import { get, pick } from 'lodash';
+import { bind, get, mapValues, pick } from 'lodash';
 import { Knex } from 'knex';
 import { executeSQLWithDisabledForeignKeys } from 'src/utils/knex/executeSQLWithDisabledForeignKeys';
 import exportDsl from 'src/utils/knex/export-dsl';
 import { ExecutionService } from '../Execution/execution.service';
+import { Sequelize, SequelizeOptions } from 'sequelize-typescript';
+import SequelizeAuto from 'sequelize-auto-model';
+
+import { importer } from '@dbml/core';
+import schemaInspector from 'knex-schema-inspector';
+import { dbDrivers } from './DBTypes';
 
 function pureCode(raw: string): string {
   const codeRegex = /```.*\n([\s\S]*?)\n```/;
@@ -30,8 +36,9 @@ export class QueriesService {
     @InjectModel(Query) private QueryModel: typeof Query,
     @InjectModel(DB) private DbModel: typeof DB,
     private executor: ExecutionService,
+    private sequelize: Sequelize,
   ) {}
-  async executeQuery(pramas: {
+  async executeQuery(params: {
     config: Record<string, any>;
     execution: {
       content: string;
@@ -39,17 +46,17 @@ export class QueriesService {
     }[];
     dbID: string;
   }) {
-    console.log(pramas);
-    let db = this.knex.get(pramas.dbID);
+    console.log(params);
+    let db = this.knex.get(params.dbID);
     if (!db) {
-      const dbConfig = await this.DbModel.findByPk(pramas.dbID);
+      const dbConfig = await this.DbModel.findByPk(params.dbID);
       const { client, host, port, user, password, database }: any = get(
         dbConfig,
         'dataValues.config',
         {},
       );
       db = await this.knex.create({
-        client: client,
+        client: dbDrivers.get(client),
         asyncStackTraces: true,
         debug: true,
         connection: {
@@ -61,7 +68,7 @@ export class QueriesService {
         },
       });
     }
-    const { execution = [], config } = pramas;
+    const { execution = [], config } = params;
     if (db) {
       const results: string[] = [];
       const fx = async ({
@@ -236,7 +243,7 @@ export class QueriesService {
   async testConnectDb(dbConfig: DB['config']) {
     const { client, host, port, user, password, database } = dbConfig as any;
     const db: Knex = this.knex.create({
-      client: client,
+      client: dbDrivers.get(client),
       asyncStackTraces: true,
       debug: true,
       connection: {
@@ -248,7 +255,8 @@ export class QueriesService {
       },
     });
     try {
-      await db.raw('SHOW TABLES;');
+      const inspector = schemaInspector(db);
+      await inspector.tables();
       this.knex.destroy(db);
       return {
         status: 200,
@@ -292,6 +300,65 @@ export class QueriesService {
       };
     }
   }
+
+  async getDbModel(config: Knex.Config) {
+    const { client, host, port, user, password, database }: any = config;
+
+    const sequelize = this.sequelize;
+    const queryInterface = sequelize.getQueryInterface();
+    const options: any = { caseFile: 'c', caseModel: 'c', caseProp: 'c' };
+    const dialect = dbDrivers.get(client);
+    const sequelizeDemo = new Sequelize({
+      dialect: client,
+      host,
+      port,
+      username: user,
+      password,
+      database,
+    });
+    const auto = new SequelizeAuto(sequelizeDemo, null, null, options);
+    const tableData = await auto.build();
+
+    const modelSql = [];
+    const queryGenerator: any = queryInterface.queryGenerator;
+
+    for (const tableName in tableData.tables) {
+      let attributes = tableData.tables[tableName];
+      attributes = mapValues(attributes, (attribute) =>
+        bind(
+          get(queryInterface, 'normalizeAttribute', (attrs) => false),
+          queryInterface,
+        )(attribute),
+      );
+
+      attributes = queryGenerator.attributesToSQL(attributes, {
+        table: tableName,
+        context: 'createTable',
+        withoutForeignKeyConstraints: false,
+      });
+      modelSql.push(
+        queryGenerator.createTableQuery(tableName, attributes, {
+          withoutForeignKeyConstraints: false,
+        }),
+      );
+    }
+    try {
+      const data = importer.import(modelSql.join('\n'), client as any);
+      sequelizeDemo.close();
+      return {
+        data: data,
+        status: 200,
+      };
+    } catch (err) {
+      console.log(err, 'err');
+      sequelizeDemo.close();
+      return {
+        err: '参数错误，连接失败',
+        status: 401,
+      };
+    }
+  }
+
   async addQuery(query: Query) {
     return this.QueryModel.create(
       pick(query, 'name', 'content', 'schemaId', 'DbID'),

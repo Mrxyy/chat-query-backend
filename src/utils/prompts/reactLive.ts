@@ -1,10 +1,8 @@
-import { OpenAI } from 'langchain/llms/openai';
 import {
   AIMessagePromptTemplate,
   ChatPromptTemplate,
   HumanMessagePromptTemplate,
-} from 'langchain/prompts';
-import { LLMChain } from 'langchain/chains';
+} from '@langchain/core/prompts';
 import { getChatOpenAi } from '../Ai';
 const model = getChatOpenAi();
 
@@ -64,4 +62,4 @@ const prompt = ChatPromptTemplate.fromMessages([
   Messages_2,
   Messages_3,
 ]);
-export const GET_COMPONENT_BY_DATA = new LLMChain({ llm: model, prompt });
+export const GET_COMPONENT_BY_DATA = prompt.pipe(model);

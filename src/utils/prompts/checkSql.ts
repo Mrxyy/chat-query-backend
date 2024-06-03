@@ -1,11 +1,13 @@
+import { parse } from 'path';
 import {
   ChatPromptTemplate,
   HumanMessagePromptTemplate,
   SystemMessagePromptTemplate,
-} from 'langchain/prompts';
+} from '@langchain/core/prompts';
 import { z } from 'zod';
 import { getChatOpenAi } from '../Ai';
-import { createStructuredOutputChainFromZod } from 'langchain/chains/openai_functions';
+import { RunnableSequence } from '@langchain/core/runnables';
+import { StructuredOutputParser } from '@langchain/core/output_parsers';
 const model = getChatOpenAi();
 
 const zodSchema = z.object({
@@ -18,19 +20,16 @@ const zodSchema = z.object({
       '你现在是用户,下一次你将输入什么内容(中文)保证上面你最后一条记录中的需求能被正确的被理解。',
     ),
 });
+
+export const parser = StructuredOutputParser.fromZodSchema(zodSchema);
 const prompt = ChatPromptTemplate.fromMessages([
   SystemMessagePromptTemplate.fromTemplate(`沟通记录:\n
     {messageList}
   `),
   HumanMessagePromptTemplate.fromTemplate(
     `你需要谨慎查看这个沟通记录，你扮演对话中的用户, 对比需求和回答,以判断你最后一条记录中的需求是否被正确理解且能被正确解决。
-    如果需求和答案没有对齐,你现在是用户,下一次你将输入什么内容(中文)保证上面你最后一条记录中的需求能被正确的被理解。`,
+    如果需求和答案没有对齐,你现在是用户,下一次你将输入什么内容(中文)保证上面你最后一条记录中的需求能被正确的被理解。{format_instructions}`,
   ),
 ]);
 
-export const GET_CHECK_RESULT: ReturnType<
-  typeof createStructuredOutputChainFromZod
-> = createStructuredOutputChainFromZod(zodSchema, {
-  llm: model,
-  prompt,
-});
+export const GET_CHECK_RESULT = RunnableSequence.from([prompt, model, parser]);

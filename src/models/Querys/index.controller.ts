@@ -39,7 +39,7 @@ export class QueriesController {
 
   @Post('/getDbDBML')
   getDbDBML(@Body() config) {
-    return this.service.getDbDBML(config);
+    return this.service.getDbModel(config);
   }
 
   @Post('/createDbConnect')
