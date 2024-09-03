@@ -10,7 +10,6 @@ import {
   Put,
 } from '@nestjs/common';
 import { WidgetsService } from './widgets.service';
-import { Widgets } from './widgets.model';
 
 @Controller('/widgets')
 export class WidgetsController {

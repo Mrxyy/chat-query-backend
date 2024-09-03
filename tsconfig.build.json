@@ -1,5 +1,10 @@
 {
   "extends": "./tsconfig.json",
-  "compilerOptions": {},
+  "compilerOptions": {
+    "paths": {
+      "@dbml/core": ["./node_modules/dbml-core"],
+      "sequelize-auto-model": ["./node_modules/sequelize-auto-model"]
+    }
+  },
   "exclude": ["node_modules", "test", "dist", "**/*spec.ts"]
 }

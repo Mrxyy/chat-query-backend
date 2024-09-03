@@ -5,7 +5,6 @@ export async function executeRes(fx: () => any) {
   } catch (err) {
     result = { dataValues: err };
   }
-  console.log('result', result, 'result');
   return result;
 }
 

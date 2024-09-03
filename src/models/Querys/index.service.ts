@@ -1,22 +1,24 @@
+import { ActionService } from './../Action/Action.service';
 import { Schema } from './../Schema/schema.model';
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { KnexContainer } from 'src/utils/knex';
 import { Query } from './Query.model';
 import { InjectModel } from '@nestjs/sequelize';
 import { DB } from './DB.model';
 import knex from 'knex';
 import { generateDbdiagramDsl } from 'src/utils/knex/DB2DBML';
-import { bind, get, mapValues, pick } from 'lodash';
+import { each, get, map, mapValues, pick } from 'lodash';
 import { Knex } from 'knex';
 import { executeSQLWithDisabledForeignKeys } from 'src/utils/knex/executeSQLWithDisabledForeignKeys';
 import exportDsl from 'src/utils/knex/export-dsl';
 import { ExecutionService } from '../Execution/execution.service';
 import { Sequelize, SequelizeOptions } from 'sequelize-typescript';
-import SequelizeAuto from 'sequelize-auto-model';
+import SequelizeAuto, { TableData } from 'sequelize-auto-model';
 
 import { importer } from '@dbml/core';
 import schemaInspector from 'knex-schema-inspector';
 import { dbDrivers } from './DBTypes';
+import { DataTypes } from 'sequelize';
 
 function pureCode(raw: string): string {
   const codeRegex = /```.*\n([\s\S]*?)\n```/;
@@ -30,13 +32,13 @@ function pureCode(raw: string): string {
 }
 
 @Injectable()
-export class QueriesService {
+export class QueriesService implements OnModuleInit {
   constructor(
     private knex: KnexContainer,
     @InjectModel(Query) private QueryModel: typeof Query,
     @InjectModel(DB) private DbModel: typeof DB,
+    private actionService: ActionService,
     private executor: ExecutionService,
-    private sequelize: Sequelize,
   ) {}
   async executeQuery(params: {
     config: Record<string, any>;
@@ -301,14 +303,68 @@ export class QueriesService {
     }
   }
 
+  async setupAssociations(
+    models: Record<string, any>,
+    relations: TableData['relations'],
+  ) {
+    relations.forEach((relation) => {
+      const parentModel = models[relation.parentModel];
+      const childModel = models[relation.childModel];
+
+      if (relation.isM2M) {
+        // Many-to-Many relationship
+        parentModel.belongsToMany(childModel, {
+          through: models[relation.joinModel],
+          foreignKey: relation.parentId,
+          otherKey: relation.childId,
+          // as: relation.parentProp,
+        });
+        childModel.belongsToMany(parentModel, {
+          through: models[relation.joinModel],
+          foreignKey: relation.childId,
+          otherKey: relation.parentId,
+          // as: relation.childProp,
+        });
+      } else if (relation.isOne) {
+        // One-to-One relationship
+        parentModel.hasOne(childModel, {
+          foreignKey: relation.parentId,
+          // as: relation.childProp,
+        });
+        childModel.belongsTo(parentModel, {
+          foreignKey: relation.parentId,
+          // as: relation.parentProp,
+        });
+      } else {
+        // One-to-Many relationship
+        parentModel.hasMany(childModel, {
+          foreignKey: relation.parentId,
+          // as: relation.childProp,
+        });
+        childModel.belongsTo(parentModel, {
+          foreignKey: relation.parentId,
+          // as: relation.parentProp,
+        });
+      }
+    });
+  }
+
+  async getModelFromDB(config: SequelizeOptions) {
+    const sequelizeInstance = new Sequelize(config);
+    const options: any = { caseFile: 'c', caseModel: 'c', caseProp: 'c' };
+    const auto = new SequelizeAuto(sequelizeInstance, null, null, options);
+    let tableData = await auto.build(false);
+    tableData = auto.relate(tableData);
+    // auto.generateFn(tableData)(); without relation
+    auto.getCreateModelsFn(tableData)();
+    // this.setupAssociations(sequelizeInstance.models, tableData.relations);
+    return sequelizeInstance;
+  }
+
   async getDbModel(config: Knex.Config) {
     const { client, host, port, user, password, database }: any = config;
 
-    const sequelize = this.sequelize;
-    const queryInterface = sequelize.getQueryInterface();
-    const options: any = { caseFile: 'c', caseModel: 'c', caseProp: 'c' };
-    const dialect = dbDrivers.get(client);
-    const sequelizeDemo = new Sequelize({
+    const sequelizeInstance = await this.getModelFromDB({
       dialect: client,
       host,
       port,
@@ -316,42 +372,49 @@ export class QueriesService {
       password,
       database,
     });
-    const auto = new SequelizeAuto(sequelizeDemo, null, null, options);
-    const tableData = await auto.build();
-
-    const modelSql = [];
-    const queryGenerator: any = queryInterface.queryGenerator;
-
-    for (const tableName in tableData.tables) {
-      let attributes = tableData.tables[tableName];
-      attributes = mapValues(attributes, (attribute) =>
-        bind(
-          get(queryInterface, 'normalizeAttribute', (attrs) => false),
-          queryInterface,
-        )(attribute),
+    const tableSql = map(sequelizeInstance.models, (model: any) => {
+      let { tableName } = model;
+      // model.queryInterface.createTable(tableName, attributes, options, model);
+      const options: Record<string, any> = {};
+      if (model) {
+        options.uniqueKeys = options.uniqueKeys || model.uniqueKeys;
+      }
+      let attributes = mapValues(model.tableAttributes, (attribute) =>
+        model.sequelize.normalizeAttribute(attribute),
       );
-
-      attributes = queryGenerator.attributesToSQL(attributes, {
-        table: tableName,
-        context: 'createTable',
-        withoutForeignKeyConstraints: false,
-      });
-      modelSql.push(
-        queryGenerator.createTableQuery(tableName, attributes, {
-          withoutForeignKeyConstraints: false,
-        }),
+      if (!tableName.schema && (options.schema || (!!model && model._schema))) {
+        tableName = model.queryInterface.queryGenerator.addSchema({
+          tableName,
+          _schema: (!!model && model._schema) || options.schema,
+        });
+      }
+      attributes = model.queryInterface.queryGenerator.attributesToSQL(
+        attributes,
+        {
+          table: tableName,
+          context: 'createTable',
+          withoutForeignKeyConstraints: options.withoutForeignKeyConstraints,
+        },
       );
-    }
+      const sql: string =
+        model.queryInterface.queryGenerator.createTableQuery(
+          tableName,
+          attributes,
+          options,
+        ) || '';
+      return sql;
+    });
     try {
-      const data = importer.import(modelSql.join('\n'), client as any);
-      sequelizeDemo.close();
+      console.log(tableSql, 'tableSql');
+      const data = importer.import(tableSql.join('\n'), client as any);
+      sequelizeInstance.close();
       return {
         data: data,
         status: 200,
       };
     } catch (err) {
       console.log(err, 'err');
-      sequelizeDemo.close();
+      sequelizeInstance.close();
       return {
         err: '参数错误，连接失败',
         status: 401,
@@ -462,5 +525,31 @@ export class QueriesService {
       data = result;
     }
     return data;
+  }
+  async sync(dbId: DB['id']) {
+    // inject new route
+    const Db: any = await this.DbModel.findByPk(dbId);
+
+    const { client, host, port, user, password, database } = Db.config;
+    const modelSequelize = await this.getModelFromDB({
+      dialect: client,
+      host,
+      port,
+      username: user,
+      password,
+      database,
+    });
+    const prefix = '/' + Db.id;
+
+    await this.actionService.exportApi(modelSequelize, prefix);
+    const action = await this.actionService.findAction(dbId);
+    return action || this.actionService.createAction(dbId);
+  }
+  async onModuleInit() {
+    const actions = await this.actionService.findAllAction();
+
+    for (const action of actions) {
+      await this.sync(action.DbId);
+    }
   }
 }

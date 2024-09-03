@@ -181,26 +181,27 @@ export async function testSqlModel() {
     model: 'mannix/defog-llama3-sqlcoder-8b',
     // model: '@cf/defog/sqlcoder-7b-2',
   });
-  const mysqlSql = await huggingfaceOpenAi.chat.completions.create({
-    messages: [
-      {
-        role: 'user',
-        content: `
-        ## require
-        + According sql:${get(
-          chatCompletion,
-          'choices[0].message.content',
-        )}, The sql only support pg sql currently,Convert to SQL syntax that supports MySQL, please output the SQL directly without any other text.
-        ## output
-        \`\`\`mysql\`\`\`
-        ## example
-        select * from table;
-        `,
-      },
-    ],
-    model: 'meta-llama/Meta-Llama-3-70B-Instruct',
-    // web_search: true,
-    // stream: true,
-  });
-  console.log(get(mysqlSql, 'choices[0].message.content.text'));
+  // const mysqlSql = await huggingfaceOpenAi.chat.completions.create({
+  //   messages: [
+  //     {
+  //       role: 'user',
+  //       content: `
+  //       ## require
+  //       + According sql:${get(
+  //         chatCompletion,
+  //         'choices[0].message.content',
+  //       )}, The sql only support pg sql currently,Convert to SQL syntax that supports MySQL, please output the SQL directly without any other text.
+  //       ## output
+  //       \`\`\`mysql\`\`\`
+  //       ## example
+  //       select * from table;
+  //       `,
+  //     },
+  //   ],
+  //   model: 'meta-llama/Meta-Llama-3-70B-Instruct',
+  //   // web_search: true,
+  //   // stream: true,
+  // });
+  // console.log(get(mysqlSql, 'choices[0].message.content.text'));
+  console.log(get(chatCompletion, 'choices[0].message.content'));
 }

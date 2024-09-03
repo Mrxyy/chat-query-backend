@@ -45,7 +45,7 @@ const prompt = PromptTemplate.fromTemplate(
 1. The type of props generated must be supported by the function getControlType.
 2. The label is the Chinese description of the role of prop,
 3. The defaultValue of prop can be the value in the original code, a valid value matching the Type of prop, or even null.
-4. Please output directly as JSON without any additional content.
+4. The <Output-Example> directly as JSON content without any additional content.
 5. The value in <Output-Example> is an explanation of the key.
 6. props.children 已经被使用，请不要使用 children 作为prop的名称（非常重要!）.
 

@@ -7,6 +7,9 @@
     "assets": [
       "**/*.md"
     ],
+    "builder": {
+      "type": "swc"
+    },
     "watchAssets": true
   }
 }

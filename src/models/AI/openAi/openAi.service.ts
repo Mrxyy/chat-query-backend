@@ -1,4 +1,4 @@
-import { defaultScope, fxTepmlate } from './../../../utils/prompts/reactLive';
+import { defaultScope, fxTemplate } from './../../../utils/prompts/reactLive';
 // import { PromptTemplate } from 'langchain/prompts';
 // import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 
@@ -122,7 +122,7 @@ If the question does not seem related to the database, just return "I don't know
       props: JSON.stringify(props),
       need,
       scope: defaultScope,
-      fxTepmlate: fxTepmlate,
+      fxTepmlate: fxTemplate,
     });
     console.timeEnd('start');
 
@@ -142,11 +142,12 @@ If the question does not seem related to the database, just return "I don't know
   }
 
   async getWidgetProps(code: string, fn: string, requirements: string) {
-    const chain = GET_WIDGET_PROPS.pipe((v) =>
-      JSON.parse(v.content as string),
-    ).pipe(
+    const chain = GET_WIDGET_PROPS.pipe((v) => {
+      const t = extractCodeBlocks(v.content);
+      return JSON.parse(t[0] as string);
+    }).pipe(
       RunnableMap.from({
-        widget: RunnablePassthrough,
+        widget: new RunnablePassthrough(),
         updatedPropsCode: RunnableLambda.from(
           async ({ props }) =>
             (
@@ -160,7 +161,7 @@ If the question does not seem related to the database, just return "I don't know
       }),
     );
     return {
-      data: chain.invoke({
+      data: await chain.invoke({
         code,
         fn,
         output: output,

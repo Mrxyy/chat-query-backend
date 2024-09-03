@@ -28,6 +28,11 @@ export class QueriesController {
     return this.service.addQuery(query);
   }
 
+  @Get('/sync/:dbId')
+  async sync(@Param('dbId') dbId) {
+    return this.service.sync(dbId);
+  }
+
   @Put('/:queryId')
   updateQuery(
     @Param('queryId') queryId,

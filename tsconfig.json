@@ -18,7 +18,8 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@dbml/core": ["./node_modules/dbml-core"]
+      "@dbml/core": ["../packages/dbml/packages/dbml-core"],
+      "sequelize-auto-model": ["./packages/sequelize-auto-model"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.md"]

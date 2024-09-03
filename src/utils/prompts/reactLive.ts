@@ -36,7 +36,7 @@ import ReactECharts from 'echarts-for-react';  // or var ReactECharts = require(
 }
 `;
 
-export const fxTepmlate = `export default App() {
+export const fxTemplate = `export default App() {
 const props = data;
 ...
 }`;

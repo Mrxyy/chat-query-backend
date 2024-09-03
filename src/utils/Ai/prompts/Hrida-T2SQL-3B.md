@@ -1,12 +1,9 @@
-### Instructions:
+### Instruction: 
 Your task is to convert a question into a SQL query, given a Mysql database schema.
 Adhere to these rules:
-
-### Limit
-Please do not translate field names, keep the original field names.
-
-### Input:
-Generate a SQL query that answers the question `{question}`.
+### Dialect:
+ MySQL
+### Context: 
 This query will run on a database whose schema is represented in this string:
 CREATE TABLE `qd_dtl_year` (
   `参保地` varchar(255),
@@ -58,8 +55,8 @@ CREATE TABLE `qd_dtl_year` (
   `手术及操作` varchar(255),
   `手术及操作编码` varchar(255)
 );
-
-### Response:
-Based on your instructions, here is the Mysql-SQL query I have generated to answer the question `{查出每个病人年龄)}`:
+### Input: 
+查出每个病人年龄
+### Response:
 ```mysql
 ```

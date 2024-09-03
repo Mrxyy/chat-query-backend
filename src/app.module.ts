@@ -10,8 +10,9 @@ import { EventsModule } from './models/events/events.module';
 import { WidgetsModule } from './models/widgets';
 import { FlowNodeModel } from './models/FlowNode';
 import { WorkFlowModel } from './models/Flow';
-import { functionCallTest } from './Example';
-
+import { functionCallTest, testSqlModel } from './Example';
+import { ActionModule } from './models/Action';
+import { AppProviderModule } from './AppProvider';
 config();
 export const dbHost = process.env['DB_HOST'];
 export const dbPort = Number(process.env['DB_PORT']);
@@ -22,7 +23,7 @@ const env = [
     host: dbHost,
     port: dbPort,
     username: 'root',
-    password: '123789',
+    password: '123789xyy',
     database: 'chat_query',
     autoLoadModels: true,
     synchronize: true,
@@ -43,6 +44,8 @@ const env = [
     WidgetsModule,
     FlowNodeModel,
     WorkFlowModel,
+    AppProviderModule,
+    ActionModule,
   ],
 })
 export class AppModule {
@@ -52,6 +55,15 @@ export class AppModule {
     //     console.log(sql.replace(sqlPrefix, ''));
     //   },
     // });
-    // (async () => {})();
+    (async () => {
+      // functionCallTest();
+      // const fn = new Function(
+      //   'functionCallTest',
+      //   'console.log(functionCallTest)',
+      // );
+      // eval('console.log(functionCallTest)');
+      // fn(functionCallTest);
+      // testSqlModel();
+    })();
   }
 }
