@@ -16,14 +16,16 @@ import { AppProviderModule } from './AppProvider';
 config();
 export const dbHost = process.env['DB_HOST'];
 export const dbPort = Number(process.env['DB_PORT']);
+export const dbUser = process.env['DB_USER'];
+export const dbPassword = process.env['DB_PASSWORD'];
 
 const env = [
   SequelizeModule.forRoot({
     dialect: 'mysql',
     host: dbHost,
     port: dbPort,
-    username: 'root',
-    password: '123789xyy',
+    username: dbUser || 'root',
+    password: dbPassword || '123789',
     database: 'chat_query',
     autoLoadModels: true,
     synchronize: true,
