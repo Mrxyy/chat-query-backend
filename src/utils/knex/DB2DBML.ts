@@ -21,7 +21,7 @@ export async function generateDbdiagramDsl(
 
   for (const table of tables) {
     const table_name = table['TABLE_NAME'] || table['table_name'];
-    dsl += `Table ${table_name} {\n`;
+    dsl += `Table "${table_name}" {\n`;
 
     // console.log(databaseName,table_name)
     const columns = isOracle
@@ -73,7 +73,7 @@ export async function generateDbdiagramDsl(
           .first();
 
         if (refInfo) {
-          dsl += `  ${column_name} ${data_type.toUpperCase()} [ref: > ${referenced_table_name}.${referenced_column_name}]\n`;
+          dsl += `  "${column_name}" ${data_type.toUpperCase()} [ref: > ${referenced_table_name}.${referenced_column_name}]\n`;
         }
       } else {
         const columnInfo = columns.find(
@@ -84,7 +84,7 @@ export async function generateDbdiagramDsl(
           ? columnInfo.DATA_TYPE || columnInfo.data_type
           : '';
         // 处理外键关系的代码
-        dsl += `  ${column_name} ${data_type.toUpperCase()} [ref: > ${referenced_table_name}.${referenced_column_name}]\n`;
+        dsl += `  "${column_name}" ${data_type.toUpperCase()} [ref: > "${referenced_table_name}.${referenced_column_name}"]\n`;
       }
       flag[column_name] = true;
     }
@@ -94,7 +94,7 @@ export async function generateDbdiagramDsl(
       const data_type = col.DATA_TYPE || col.data_type;
       const column_key = col.COLUMN_KEY || col.column_key;
       if (!flag[column_name])
-        dsl += `  ${column_name} ${data_type.toUpperCase()}${
+        dsl += `  "${column_name}" ${data_type.toUpperCase()}${
           column_key === 'PRI' ? ' [pk]' : ''
         }\n`;
     }
