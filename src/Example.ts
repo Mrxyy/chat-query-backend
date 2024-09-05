@@ -1,10 +1,6 @@
 import { bind, get, mapValues } from 'lodash';
-import SequelizeAuto from 'sequelize-auto-model';
-import {
-  ollamaOpenAi,
-  cloudflareOpenAi,
-  huggingfaceOpenAi,
-} from './utils/Ai/openAi-native';
+import SequelizeAuto from 'sequelize-auto';
+import { ollamaOpenAi } from './utils/Ai/openAi-native';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import { extractCodeBlocks } from './utils/parse/getCode';

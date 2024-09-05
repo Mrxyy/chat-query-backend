@@ -13,7 +13,7 @@ import { executeSQLWithDisabledForeignKeys } from 'src/utils/knex/executeSQLWith
 import exportDsl from 'src/utils/knex/export-dsl';
 import { ExecutionService } from '../Execution/execution.service';
 import { Sequelize, SequelizeOptions } from 'sequelize-typescript';
-import SequelizeAuto, { TableData } from 'sequelize-auto-model';
+import SequelizeAuto, { TableData } from 'sequelize-auto';
 
 import { importer } from '@dbml/core';
 import schemaInspector from 'knex-schema-inspector';
