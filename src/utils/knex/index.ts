@@ -18,14 +18,16 @@ export class KnexContainer {
       !KnexContainer.oracledbInit
     ) {
       try {
+        //https://medium.com/oracledevs/how-to-install-node-oracledb-5-5-and-oracle-database-on-apple-m1-m2-silicon-941fccda692f
         oracledb.initOracleClient({
           libDir:
             process.env['LD_LIBRARY_PATH'] ||
             process.env.HOME + '/Downloads/instantclient_19_8',
         });
+        console.log('启用oracle厚模式');
         KnexContainer.oracledbInit = true;
       } catch (e) {
-        console.log('无法使用oracle厚模式');
+        console.log(e, '无法使用oracle厚模式');
       }
     }
   }

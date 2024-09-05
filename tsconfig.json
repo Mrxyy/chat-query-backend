@@ -1,26 +1,3 @@
 {
-  "compilerOptions": {
-    "module": "commonjs",
-    "declaration": true,
-    "removeComments": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
-    "target": "es2017",
-    "sourceMap": true,
-    "outDir": "./dist",
-    "baseUrl": "./",
-    "incremental": true,
-    "skipLibCheck": true,
-    "strictNullChecks": false,
-    "noImplicitAny": false,
-    "strictBindCallApply": false,
-    "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false,
-    "paths": {
-      "@dbml/core": ["../packages/dbml/packages/dbml-core"],
-      "sequelize-auto-model": ["./packages/sequelize-auto-model"]
-    }
-  },
-  "include": ["src/**/*.ts", "src/**/*.md"]
+  "extends": ["./tsconfig.base.json", "./tsconfig.dev.json"]
 }

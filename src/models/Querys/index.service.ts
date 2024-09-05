@@ -7,7 +7,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { DB } from './DB.model';
 import knex from 'knex';
 import { generateDbdiagramDsl } from 'src/utils/knex/DB2DBML';
-import { each, get, map, mapValues, pick } from 'lodash';
+import { get, map, mapValues, pick } from 'lodash';
 import { Knex } from 'knex';
 import { executeSQLWithDisabledForeignKeys } from 'src/utils/knex/executeSQLWithDisabledForeignKeys';
 import exportDsl from 'src/utils/knex/export-dsl';
@@ -18,7 +18,6 @@ import SequelizeAuto, { TableData } from 'sequelize-auto-model';
 import { importer } from '@dbml/core';
 import schemaInspector from 'knex-schema-inspector';
 import { dbDrivers } from './DBTypes';
-import { DataTypes } from 'sequelize';
 
 function pureCode(raw: string): string {
   const codeRegex = /```.*\n([\s\S]*?)\n```/;
@@ -82,6 +81,12 @@ export class QueriesService implements OnModuleInit {
       }) => {
         if (type === 'sql') {
           const sqlArr = content.split(/;\n/);
+          if (sqlArr.length) {
+            sqlArr[sqlArr.length - 1] = sqlArr[sqlArr.length - 1].replace(
+              /;(\n)*?$/g,
+              '',
+            );
+          }
           const params = [];
           const templateSqlArr = [];
           for (let i = 0; i < sqlArr.length; i++) {
@@ -355,9 +360,9 @@ export class QueriesService implements OnModuleInit {
     const auto = new SequelizeAuto(sequelizeInstance, null, null, options);
     let tableData = await auto.build(false);
     tableData = auto.relate(tableData);
-    // auto.generateFn(tableData)(); without relation
-    auto.getCreateModelsFn(tableData)();
-    // this.setupAssociations(sequelizeInstance.models, tableData.relations);
+    auto.generateModelsFn(tableData)(); //without relation
+    // auto.getCreateModelsFn(tableData)();
+    this.setupAssociations(sequelizeInstance.models, tableData.relations);
     return sequelizeInstance;
   }
 
@@ -402,10 +407,15 @@ export class QueriesService implements OnModuleInit {
           attributes,
           options,
         ) || '';
-      return sql;
+      switch (client) {
+        case 'oracle':
+          //TODO dbml 当前不支持 ql/sql
+          return sql.slice(25, -73) + ';';
+        default:
+          return sql;
+      }
     });
     try {
-      console.log(tableSql, 'tableSql');
       const data = importer.import(tableSql.join('\n'), client as any);
       sequelizeInstance.close();
       return {

@@ -1,5 +1,5 @@
 {
-  "extends": "./tsconfig.json",
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "paths": {
       "@dbml/core": ["./node_modules/dbml-core"],

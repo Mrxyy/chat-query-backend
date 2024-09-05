@@ -3,12 +3,14 @@
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
   "compilerOptions": {
+    "webpack": false,
     "deleteOutDir": true,
     "assets": [
       "**/*.md"
     ],
     "builder": {
-      "type": "swc"
+      "type": "swc",
+      "options": {}
     },
     "watchAssets": true
   }
