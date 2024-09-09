@@ -18,6 +18,7 @@ import SequelizeAuto, { TableData } from 'sequelize-auto';
 import { importer } from '@dbml/core';
 import schemaInspector from 'knex-schema-inspector';
 import { dbDrivers } from './DBTypes';
+import { getBatchSqlItems } from 'src/utils/parse/ batchSql';
 
 function pureCode(raw: string): string {
   const codeRegex = /```.*\n([\s\S]*?)\n```/;
@@ -49,13 +50,13 @@ export class QueriesService implements OnModuleInit {
   }) {
     console.log(params);
     let db = this.knex.get(params.dbID);
+    const dbConfig = await this.DbModel.findByPk(params.dbID);
+    const { client, host, port, user, password, database }: any = get(
+      dbConfig,
+      'dataValues.config',
+      {},
+    );
     if (!db) {
-      const dbConfig = await this.DbModel.findByPk(params.dbID);
-      const { client, host, port, user, password, database }: any = get(
-        dbConfig,
-        'dataValues.config',
-        {},
-      );
       db = await this.knex.create({
         client: dbDrivers.get(client),
         asyncStackTraces: true,
@@ -80,13 +81,8 @@ export class QueriesService implements OnModuleInit {
         type: string;
       }) => {
         if (type === 'sql') {
-          const sqlArr = content.split(/;\n/);
-          if (sqlArr.length) {
-            sqlArr[sqlArr.length - 1] = sqlArr[sqlArr.length - 1].replace(
-              /;(\n)*?$/g,
-              '',
-            );
-          }
+          const sqlArr = getBatchSqlItems(content, client) as string[];
+
           const params = [];
           const templateSqlArr = [];
           for (let i = 0; i < sqlArr.length; i++) {
@@ -130,23 +126,29 @@ export class QueriesService implements OnModuleInit {
     const defaultKnex = knex(dbConfig);
 
     // 根据不同数据库系统的语法，创建数据库
-    if (dbConfig.client === 'mysql' || dbConfig.client === 'mysql2') {
-      await defaultKnex.schema.raw(
-        `CREATE DATABASE IF NOT EXISTS \`${dbName}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`,
-      );
-    } else if (dbConfig.client === 'mssql') {
-      await defaultKnex.schema.raw(
-        `CREATE DATABASE [${dbName}] COLLATE Latin1_General_CI_AS`,
-      );
-    } else if (dbConfig.client === 'pg') {
-      await defaultKnex.schema.raw(
-        `CREATE DATABASE "${dbName}" WITH ENCODING 'UTF8' LC_COLLATE = 'en_US.UTF-8' LC_CTYPE = 'en_US.UTF-8'`,
-      );
-    } else if (dbConfig.client === 'oracle') {
-      // Oracle 不支持在 CREATE DATABASE 语句中直接设置字符集，请参考官方文档进行配置。
-      await defaultKnex.schema.raw(`CREATE DATABASE "${dbName}"`);
-    } else {
-      throw new Error(`Unsupported database client: ${dbConfig.client}`);
+    switch (dbConfig.client) {
+      case 'mysql':
+      case 'mysql2':
+        await defaultKnex.schema.raw(
+          `CREATE DATABASE IF NOT EXISTS \`${dbName}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`,
+        );
+        break;
+      case 'mssql':
+        await defaultKnex.schema.raw(
+          `CREATE DATABASE [${dbName}] COLLATE Latin1_General_CI_AS`,
+        );
+        break;
+      case 'pg':
+        await defaultKnex.schema.raw(
+          `CREATE DATABASE "${dbName}" WITH ENCODING 'UTF8' LC_COLLATE = 'en_US.UTF-8' LC_CTYPE = 'en_US.UTF-8' TEMPLATE template0`,
+        );
+        break;
+      case 'oracledb':
+        // Oracle 不支持在 CREATE DATABASE 语句中直接设置字符集，请参考官方文档进行配置。
+        await defaultKnex.schema.raw(`CREATE DATABASE "${dbName}"`);
+        break;
+      default:
+        throw new Error(`Unsupported database client: ${dbConfig.client}`);
     }
 
     // 断开连接到默认数据库的 knex 实例
@@ -193,17 +195,20 @@ export class QueriesService implements OnModuleInit {
         tableDict: {},
         linkDict: {},
       });
+
+      const { client, host, port, user, password, database, newDbName }: any =
+        dbConfig.config;
+
       const ddl = exportDsl(
         tableDict,
         linkDict,
+        client,
         // get(dbConfig, 'config.newDbType'),
       ).split(/\n\s*\n/);
-      const { client, host, port, user, password, database, newDbName }: any =
-        dbConfig.config;
       if (ddl && get(dbConfig.config, 'newDbName')) {
         await this.createDatabaseAndExecuteDDL(
           {
-            client: client,
+            client: dbDrivers.get(client),
             asyncStackTraces: true,
             debug: true,
             connection: {

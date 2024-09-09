@@ -26,7 +26,6 @@ import {
 } from '@langchain/core/runnables';
 export const openAIApiKey = process.env['OPEN_AI_API_KEY'];
 
-console.log(Tool);
 export class TestSqlTool extends Tool {
   name = 'execute-sql';
 

@@ -1,5 +1,4 @@
-import { ModelExporter, Parser, exporter } from '@dbml/core';
-import { readFileSync, writeFileSync } from 'fs';
+import { ModelExporter, Parser } from '@dbml/core';
 /**
  * It takes a table dictionary and a link dictionary and returns a SQL string
  * @param tableDict - a dictionary of tables, where the key is the table ID and the value is the tableobject

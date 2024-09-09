@@ -18,11 +18,12 @@ export class KnexContainer {
       !KnexContainer.oracledbInit
     ) {
       try {
+        //mac:https://medium.com/oracledevs/oracle-instant-client-macos-arm64-for-apple-m1-m2-m3-platforms-is-now-available-950f1bc041f9
         //https://medium.com/oracledevs/how-to-install-node-oracledb-5-5-and-oracle-database-on-apple-m1-m2-silicon-941fccda692f
         oracledb.initOracleClient({
           libDir:
             process.env['LD_LIBRARY_PATH'] ||
-            process.env.HOME + '/Downloads/instantclient_19_8',
+            process.env.HOME + '/Downloads/instantclient_23_3',
         });
         console.log('启用oracle厚模式');
         KnexContainer.oracledbInit = true;

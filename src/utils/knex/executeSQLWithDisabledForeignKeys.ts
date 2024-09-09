@@ -6,7 +6,7 @@ export const disableConstraints = {
   mysql: 'SET FOREIGN_KEY_CHECKS = 0;',
   mysql2: 'SET FOREIGN_KEY_CHECKS = 0;',
   sqlServer: 'ALTER TABLE table_name NOCHECK CONSTRAINT ALL;',
-  postgresql: 'SET CONSTRAINTS ALL DEFERRED;',
+  postgres: 'SET CONSTRAINTS ALL DEFERRED;',
   oracle: `BEGIN
     FOR t IN (SELECT table_name FROM user_tables) LOOP
         FOR c IN (SELECT constraint_name FROM user_constraints WHERE table_name = t.table_name AND status = 'ENABLED') LOOP
@@ -22,7 +22,7 @@ export const enableConstraints = {
   mysql: 'SET FOREIGN_KEY_CHECKS = 1;',
   mysql2: 'SET FOREIGN_KEY_CHECKS = 1;',
   sqlServer: 'ALTER TABLE table_name CHECK CONSTRAINT ALL;',
-  postgresql: '', // Constraints will be enabled automatically at the end of the transaction
+  postgres: 'SET CONSTRAINTS ALL IMMEDIATE', // Constraints will be enabled automatically at the end of the transaction
   oracle: `BEGIN
     FOR t IN (SELECT table_name FROM user_tables) LOOP
         FOR c IN (SELECT constraint_name FROM user_constraints WHERE table_name = t.table_name AND status = 'DISABLED') LOOP
@@ -64,6 +64,8 @@ export async function executeSQLWithDisabledForeignKeys(
             return { name: k };
           }),
         ]);
+      } else if (databaseType === 'postgres') {
+        result.push([data.rows, data.fields]);
       } else {
         result.push(data);
       }

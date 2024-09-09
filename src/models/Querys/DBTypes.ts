@@ -20,6 +20,15 @@ class BiMap<K extends string | number | symbol, V> {
   }
 }
 
+export type dBTypes =
+  | 'mysql'
+  | 'mssql'
+  | 'postgre'
+  | 'sqlite'
+  | 'mongo'
+  | 'redis'
+  | 'oracle';
+
 const DriverMap = [
   {
     label: 'mysql',
@@ -28,6 +37,10 @@ const DriverMap = [
   {
     label: 'oracle',
     value: 'oracledb',
+  },
+  {
+    label: 'postgres',
+    value: 'pg',
   },
 ].reduce((map, v) => {
   map[v.label] = v.value;
