@@ -10,7 +10,7 @@ import {
   Query as QueryValue,
 } from '@nestjs/common';
 import { QueriesService } from './index.service';
-import { DB } from './DB.model';
+import { DB } from '../Database/DB.model';
 import { Query } from './Query.model';
 import { Schema } from '../Schema/schema.model';
 
@@ -48,7 +48,9 @@ export class QueriesController {
   }
 
   @Post('/createDbConnect')
-  createDbConnect(@Body() dbConfig: Pick<DB, 'config' | 'schemaId' | 'name'>) {
+  createDbConnect(
+    @Body() dbConfig: Pick<DB, 'config' | 'name'> & { schemaId: string },
+  ) {
     return this.service.createDbConnectConfigWithSchema(dbConfig);
   }
 

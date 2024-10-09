@@ -3,7 +3,7 @@ import { dirname, extname, join } from 'path';
 import inspect from 'knex-schema-inspector';
 
 /**
- *
+ * ! @deprecated
  * @param {any} knex - initialized knex connection to get the schema from
  * @param {string} outDir - directory to write to
  * @param {object} [options]

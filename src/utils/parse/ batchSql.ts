@@ -8,30 +8,30 @@ import {
   oracleSplitterOptions,
   splitQuery,
 } from 'dbgate-query-splitter';
-import { dBTypes } from 'src/models/Querys/DBTypes';
+import { DBTypes } from '../../models/Database/DBTypes';
 
-export function getBatchSqlItems(sql: string, type: dBTypes) {
+export function getBatchSqlItems(sql: string, type: DBTypes) {
   let options;
   switch (type) {
-    case 'mysql':
+    case DBTypes.MySQL:
       options = mysqlSplitterOptions;
       break;
-    case 'mssql':
+    case DBTypes.MSSQL:
       options = mssqlSplitterOptions;
       break;
-    case 'postgre':
+    case DBTypes.Postgre:
       options = postgreSplitterOptions;
       break;
-    case 'sqlite':
+    case DBTypes.SQLite:
       options = sqliteSplitterOptions;
       break;
-    case 'mongo':
+    case DBTypes.Mongo:
       options = mongoSplitterOptions;
       break;
-    case 'redis':
+    case DBTypes.Redis:
       options = redisSplitterOptions;
       break;
-    case 'oracle':
+    case DBTypes.Oracle:
       options = oracleSplitterOptions;
       break;
     default:

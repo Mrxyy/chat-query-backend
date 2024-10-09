@@ -20,14 +20,15 @@ class BiMap<K extends string | number | symbol, V> {
   }
 }
 
-export type dBTypes =
-  | 'mysql'
-  | 'mssql'
-  | 'postgre'
-  | 'sqlite'
-  | 'mongo'
-  | 'redis'
-  | 'oracle';
+export enum DBTypes {
+  MySQL = 'mysql',
+  MSSQL = 'mssql',
+  Postgre = 'postgre',
+  SQLite = 'sqlite',
+  Mongo = 'mongo',
+  Redis = 'redis',
+  Oracle = 'oracle',
+}
 
 const DriverMap = [
   {

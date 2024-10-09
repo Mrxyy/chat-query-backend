@@ -31,6 +31,14 @@ export class SchemaController {
     return dataValues;
   }
 
+  @Post('/associateDatabaseAndSchema')
+  async associateDatabaseAndSchema(
+    @Body('DBId') DBId,
+    @Body('SchemaID') SchemaID,
+  ) {
+    return this.service.associateDatabaseAndSchema(DBId, SchemaID);
+  }
+
   @Delete('/:id')
   async delete(@Param('id') id) {
     return await this.service.removeSchema(id);

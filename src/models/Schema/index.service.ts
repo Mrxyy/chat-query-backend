@@ -3,19 +3,42 @@ import { Schema } from './schema.model';
 import { InjectModel } from '@nestjs/sequelize';
 import { executeRes } from '../../utils/response/sequeilze';
 import { SchemaLog } from './SchemaLog.model';
-import { get, omit } from 'lodash';
+import { get, invoke, map, omit } from 'lodash';
 import { GET_SCHEMA_INFO } from '../../utils/prompts/schema';
 import exportDsl from '../../utils/knex/export-dsl';
+import { DB } from '../Database/DB.model';
 
 @Injectable()
 export class SchemaService {
   constructor(
     @InjectModel(Schema) private SchemaModel: typeof Schema,
     @InjectModel(SchemaLog) private SchemaLogModel: typeof SchemaLog,
+    @InjectModel(DB) private DbModel: typeof DB,
   ) {}
   async addSchema(body: Pick<Schema, 'name' | 'graph'>): Promise<Schema> {
     return await executeRes(() => this.SchemaModel.create(body));
   }
+
+  async associateDatabaseAndSchema(DBId: string, SchemaID: string) {
+    const schema = await this.SchemaModel.findByPk(SchemaID, {
+      include: [
+        {
+          model: DB,
+        },
+      ],
+    });
+    const db = await this.DbModel.findByPk(DBId);
+
+    // const dbs = map(schema.DBs || [], (db) => {
+    //   return {
+    //     id: db.id,
+    //   };
+    // });
+
+    invoke(schema, 'setDBs', [...schema.DBs, db]);
+    return;
+  }
+
   async findSchema(id: string): Promise<Schema> {
     const schema = await this.SchemaModel.findByPk(id);
     if (!schema?.description) {

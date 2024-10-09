@@ -2,8 +2,11 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "paths": {
-      "@dbml/core": ["./node_modules/dbml-core"],
-      "sequelize-auto": ["./node_modules/sequelize-auto-model"]
+      "@dbml/core": ["../packages/dbml/packages/dbml-core"],
+      "sequelize-auto": ["./packages/sequelize-auto-model"],
+      "knex-schema-inspector": ["./packages/knex-schema-inspector"],
+      "knex-repositories": ["./packages/knex-repositories"],
+      "@vercel/fun": ["./packages/fun"]
     }
   },
   "exclude": ["node_modules", "test", "dist", "**/*spec.ts"]

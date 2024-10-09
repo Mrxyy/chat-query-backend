@@ -1,6 +1,9 @@
 import { Knex as KnexType } from 'knex';
 
-export async function generateDbdiagramDsl(
+/**
+ * ! @deprecated
+ */
+export async function generateDbDiagramDsl(
   knexInstance: KnexType,
 ): Promise<string> {
   const dbType = knexInstance.client.config.client;

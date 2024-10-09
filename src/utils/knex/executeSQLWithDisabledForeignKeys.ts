@@ -1,37 +1,7 @@
 import { flatten, get, map } from 'lodash';
-import { dbDrivers } from './../../models/Querys/DBTypes';
+import { dbDrivers } from '../../models/Database/DBTypes';
 import { Knex } from 'knex';
-
-export const disableConstraints = {
-  mysql: 'SET FOREIGN_KEY_CHECKS = 0;',
-  mysql2: 'SET FOREIGN_KEY_CHECKS = 0;',
-  sqlServer: 'ALTER TABLE table_name NOCHECK CONSTRAINT ALL;',
-  postgres: 'SET CONSTRAINTS ALL DEFERRED;',
-  oracle: `BEGIN
-    FOR t IN (SELECT table_name FROM user_tables) LOOP
-        FOR c IN (SELECT constraint_name FROM user_constraints WHERE table_name = t.table_name AND status = 'ENABLED') LOOP
-            EXECUTE IMMEDIATE 'ALTER TABLE ' || t.table_name || ' DISABLE CONSTRAINT ' || c.constraint_name;
-        END LOOP;
-    END LOOP;
-END;
-`,
-};
-
-// Enable foreign key constraints for different databases
-export const enableConstraints = {
-  mysql: 'SET FOREIGN_KEY_CHECKS = 1;',
-  mysql2: 'SET FOREIGN_KEY_CHECKS = 1;',
-  sqlServer: 'ALTER TABLE table_name CHECK CONSTRAINT ALL;',
-  postgres: 'SET CONSTRAINTS ALL IMMEDIATE', // Constraints will be enabled automatically at the end of the transaction
-  oracle: `BEGIN
-    FOR t IN (SELECT table_name FROM user_tables) LOOP
-        FOR c IN (SELECT constraint_name FROM user_constraints WHERE table_name = t.table_name AND status = 'DISABLED') LOOP
-            EXECUTE IMMEDIATE 'ALTER TABLE ' || t.table_name || ' ENABLE CONSTRAINT ' || c.constraint_name;
-        END LOOP;
-    END LOOP;
-END;
-`,
-};
+import { disableConstraints, enableConstraints } from './extra';
 
 const annotationMatching = /(--.*)|(((\/\*)+?[\w\W]+?(\*\/)+))/g;
 

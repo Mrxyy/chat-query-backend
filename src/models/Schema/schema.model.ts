@@ -11,8 +11,11 @@ import {
   Default,
   AllowNull,
   HasMany,
+  BelongsToMany,
 } from 'sequelize-typescript';
 import { SchemaLog } from './SchemaLog.model';
+import { DBSchema } from '../Database/DBSchema.model';
+import { DB } from '../Database/DB.model';
 
 @Table
 export class Schema extends Model {
@@ -27,6 +30,9 @@ export class Schema extends Model {
     sourceKey: 'id',
   })
   schemaLogs: SchemaLog[];
+
+  @BelongsToMany(() => DB, () => DBSchema)
+  DBs: DB[];
 
   @Comment('模型名称')
   @AllowNull(false)

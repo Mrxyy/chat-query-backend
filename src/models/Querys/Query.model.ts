@@ -14,7 +14,7 @@ import {
   BelongsTo,
   ForeignKey,
 } from 'sequelize-typescript';
-import { DB } from './DB.model';
+import { DB } from '../Database/DB.model';
 
 @Table
 export class Query extends Model {

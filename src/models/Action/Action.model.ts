@@ -11,7 +11,7 @@ import {
   Default,
   ForeignKey,
 } from 'sequelize-typescript';
-import { DB } from '../Querys/DB.model';
+import { DB } from '../Database/DB.model';
 
 @Table
 export class ActionModel extends Model {

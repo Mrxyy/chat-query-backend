@@ -8,10 +8,6 @@ import { createSqlAgent, SqlToolkit } from 'langchain/agents/toolkits/sql';
 // import { SqlDatabaseChain } from 'langchain/chains';
 import { get, nth } from 'lodash';
 import { Tool } from 'langchain/tools';
-import {
-  disableConstraints,
-  enableConstraints,
-} from 'src/utils/knex/executeSQLWithDisabledForeignKeys';
 import { GET_COMPONENT_BY_DATA } from 'src/utils/prompts/reactLive';
 import { extractCodeBlocks } from 'src/utils/parse/getCode';
 import { GET_FUNCTION_CODE_CHAIN } from 'src/utils/prompts/getFunction';
@@ -24,6 +20,7 @@ import {
   RunnableMap,
   RunnablePassthrough,
 } from '@langchain/core/runnables';
+import { disableConstraints, enableConstraints } from 'src/utils/knex/extra';
 export const openAIApiKey = process.env['OPEN_AI_API_KEY'];
 
 export class TestSqlTool extends Tool {

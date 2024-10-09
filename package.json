@@ -38,7 +38,7 @@
     "dotenv": "^16.1.4",
     "finale-rest": "^1.2.2",
     "knex": "^2.4.2",
-    "knex-schema-inspector": "^3.1.0",
+    "knex-utils": "^6.0.0",
     "langchain": "latest",
     "lodash": "^4.17.21",
     "mysql2": "^3.3.3",
@@ -46,8 +46,7 @@
     "oracledb": "^6.6.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
-    "sequelize": "^6.32.0",
-    "sequelize-auto-model": "latest",
+    "sequelize": "^6.37.3",
     "sequelize-typescript": "^2.1.5",
     "typeorm": "^0.3.16",
     "zod": "^3.21.4"
@@ -74,6 +73,10 @@
     "ts-node": "^10.0.0",
     "tsconfig-paths": "4.2.0",
     "typescript": "^5.0.0"
+  },
+  "resolutions": {
+    "sequelize": "^6.32.0",
+    "oracledb": "^6.6.0"
   },
   "jest": {
     "moduleFileExtensions": [

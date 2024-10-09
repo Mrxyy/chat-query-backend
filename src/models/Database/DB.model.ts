@@ -14,8 +14,10 @@ import {
   BelongsTo,
   ForeignKey,
   HasMany,
+  BelongsToMany,
 } from 'sequelize-typescript';
-import { Query } from './Query.model';
+import { Query } from '../Querys/Query.model';
+import { DBSchema } from './DBSchema.model';
 
 @Table
 export class DB extends Model {
@@ -43,14 +45,18 @@ export class DB extends Model {
   })
   config: JSON;
 
-  @BelongsTo(() => Schema, {
-    foreignKey: 'schemaId',
-  })
-  Schema: string;
+  // @BelongsTo(() => Schema, {
+  //   foreignKey: 'schemaId',
+  // })
+  // Schema: string;
 
-  @ForeignKey(() => Schema)
-  @Column(DataType.UUID)
-  schemaId: string;
+  // @ForeignKey(() => Schema)
+  // @AllowNull(true)
+  // @Column(DataType.UUID)
+  // schemaId: string;
+
+  @BelongsToMany(() => Schema, () => DBSchema)
+  schemas: Schema[];
 
   @CreatedAt
   createdAt: Date;

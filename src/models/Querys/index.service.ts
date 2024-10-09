@@ -4,10 +4,10 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { KnexContainer } from 'src/utils/knex';
 import { Query } from './Query.model';
 import { InjectModel } from '@nestjs/sequelize';
-import { DB } from './DB.model';
+import { DB } from '../Database/DB.model';
 import knex from 'knex';
-import { generateDbdiagramDsl } from 'src/utils/knex/DB2DBML';
-import { get, map, mapValues, pick } from 'lodash';
+import { generateDbDiagramDsl } from 'src/utils/knex/DB2DBML';
+import { get, invoke, map, mapValues, pick } from 'lodash';
 import { Knex } from 'knex';
 import { executeSQLWithDisabledForeignKeys } from 'src/utils/knex/executeSQLWithDisabledForeignKeys';
 import exportDsl from 'src/utils/knex/export-dsl';
@@ -17,7 +17,7 @@ import SequelizeAuto, { TableData } from 'sequelize-auto';
 
 import { importer } from '@dbml/core';
 import schemaInspector from 'knex-schema-inspector';
-import { dbDrivers } from './DBTypes';
+import { dbDrivers } from '../Database/DBTypes';
 import { getBatchSqlItems } from 'src/utils/parse/ batchSql';
 
 function pureCode(raw: string): string {
@@ -37,6 +37,7 @@ export class QueriesService implements OnModuleInit {
     private knex: KnexContainer,
     @InjectModel(Query) private QueryModel: typeof Query,
     @InjectModel(DB) private DbModel: typeof DB,
+    @InjectModel(Schema) private SchemaModel: typeof Schema,
     private actionService: ActionService,
     private executor: ExecutionService,
   ) {}
@@ -48,7 +49,6 @@ export class QueriesService implements OnModuleInit {
     }[];
     dbID: string;
   }) {
-    console.log(params);
     let db = this.knex.get(params.dbID);
     const dbConfig = await this.DbModel.findByPk(params.dbID);
     const { client, host, port, user, password, database }: any = get(
@@ -57,18 +57,21 @@ export class QueriesService implements OnModuleInit {
       {},
     );
     if (!db) {
-      db = await this.knex.create({
-        client: dbDrivers.get(client),
-        asyncStackTraces: true,
-        debug: true,
-        connection: {
-          host: host,
-          port: port,
-          user: user,
-          password: password,
-          database: database,
+      db = await this.knex.create(
+        {
+          client: dbDrivers.get(client),
+          asyncStackTraces: true,
+          debug: true,
+          connection: {
+            host: host,
+            port: port,
+            user: user,
+            password: password,
+            database: database,
+          },
         },
-      });
+        dbConfig.id,
+      );
     }
     const { execution = [], config } = params;
     if (db) {
@@ -171,26 +174,17 @@ export class QueriesService implements OnModuleInit {
     await knexForNewDb.destroy();
   }
   async createDbConnectConfigWithSchema(
-    dbConfig: Pick<DB, 'config' | 'schemaId' | 'name'>,
+    dbConfig: Pick<DB, 'config' | 'name'> & { schemaId: string },
   ): Promise<DB | { err: string }> {
+    const schema = await this.SchemaModel.findOne({
+      where: {
+        id: dbConfig.schemaId,
+      },
+    });
     if (get(dbConfig, 'config.create')) {
       if (!get(dbConfig, 'config.newDbName')) {
         return { err: 'please input database info' };
       }
-      const { Schema: schema } = await this.DbModel.findOne({
-        include: [
-          {
-            model: Schema,
-            required: false,
-            right: true,
-          },
-        ],
-        where: {
-          '$Schema.id$': dbConfig.schemaId,
-        },
-        paranoid: false,
-        attributes: [],
-      });
       const { tableDict, linkDict } = get(schema, 'dataValues.graph', {
         tableDict: {},
         linkDict: {},
@@ -199,13 +193,13 @@ export class QueriesService implements OnModuleInit {
       const { client, host, port, user, password, database, newDbName }: any =
         dbConfig.config;
 
-      const ddl = exportDsl(
+      const sqlOfCreateDatabase = exportDsl(
         tableDict,
         linkDict,
         client,
         // get(dbConfig, 'config.newDbType'),
       ).split(/\n\s*\n/);
-      if (ddl && get(dbConfig.config, 'newDbName')) {
+      if (sqlOfCreateDatabase && get(dbConfig.config, 'newDbName')) {
         await this.createDatabaseAndExecuteDDL(
           {
             client: dbDrivers.get(client),
@@ -219,7 +213,7 @@ export class QueriesService implements OnModuleInit {
               database: database,
             },
           },
-          ddl,
+          sqlOfCreateDatabase,
           newDbName,
         );
       }
@@ -234,15 +228,32 @@ export class QueriesService implements OnModuleInit {
           get(dbConfig.config, 'newDbName', get(dbConfig.config, 'database')),
         ),
       },
+      schemas: [], // 仅传递现有 Schema 的 ID
     };
-    return this.DbModel.create(saveConfig);
+
+    // 创建 DB 实例并关联现有的 Schema
+    const db = await this.DbModel.create(saveConfig, {
+      include: [
+        {
+          model: Schema,
+        },
+      ],
+    });
+    await invoke(db, 'setSchemas', [schema]);
+    return db;
   }
   async getSchemaAllDb(schemaId: Schema['id']): Promise<DB[]> {
-    return this.DbModel.findAll({
+    const { DBs } = await this.SchemaModel.findOne({
       where: {
-        schemaId,
+        id: schemaId,
       },
+      include: [
+        {
+          model: DB,
+        },
+      ],
     });
+    return DBs;
   }
   async deleteDb(id: DB['id']): Promise<{ id: DB['id'] }> {
     await this.DbModel.destroy({
@@ -282,6 +293,10 @@ export class QueriesService implements OnModuleInit {
       };
     }
   }
+
+  /**
+   * ! @deprecated
+   */
   async getDbDBML(config: Knex.Config) {
     const { client, host, port, user, password, database }: any = config;
     const db: Knex = this.knex.create({
@@ -297,7 +312,7 @@ export class QueriesService implements OnModuleInit {
       },
     });
     try {
-      const data = await generateDbdiagramDsl(db);
+      const data = await generateDbDiagramDsl(db);
       this.knex.destroy(db);
       return {
         data: data,
@@ -367,13 +382,22 @@ export class QueriesService implements OnModuleInit {
     tableData = auto.relate(tableData);
     auto.generateModelsFn(tableData)(); //without relation
     // auto.getCreateModelsFn(tableData)();
+
     this.setupAssociations(sequelizeInstance.models, tableData.relations);
     return sequelizeInstance;
   }
 
-  async getDbModel(config: Knex.Config) {
-    const { client, host, port, user, password, database }: any = config;
-
+  async getDbModel(config: Knex.Config & { DBId?: string }) {
+    let dbConfig = config;
+    if (config.DBId) {
+      const db = await this.DbModel.findOne({
+        where: {
+          id: config.DBId,
+        },
+      });
+      dbConfig = db.config as any;
+    }
+    const { client, host, port, user, password, database }: any = dbConfig;
     const sequelizeInstance = await this.getModelFromDB({
       dialect: client,
       host,
