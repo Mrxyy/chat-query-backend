@@ -9,7 +9,7 @@ import {
   Param,
 } from '@nestjs/common';
 import { DBService } from './index.service';
-import { DB } from './db.model';
+import { DB } from './DB.model';
 import { KnexContainer } from 'src/utils/knex';
 
 @Controller('db')

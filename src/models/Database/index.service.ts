@@ -2,7 +2,7 @@ import { config } from 'dotenv';
 // db.service.ts
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { DB } from './db.model';
+import { DB } from './DB.model';
 import { KnexContainer } from 'src/utils/knex';
 import { get, map, set } from 'lodash';
 import { dbDrivers, DBTypes } from './DBTypes';
