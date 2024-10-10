@@ -41,8 +41,6 @@
   "homepage": "https://github.com/knex/knex-schema-inspector#readme",
   "devDependencies": {
     "@types/chai": "^4.3.3",
-    "@types/lodash.flatten": "^4.4.7",
-    "@types/lodash.isnil": "^4.0.7",
     "@types/mocha": "^10.0.0",
     "@types/node": "^18.11.2",
     "better-sqlite3": "^8.6.0",
@@ -71,7 +69,6 @@
     }
   },
   "dependencies": {
-    "lodash.flatten": "^4.4.0",
-    "lodash.isnil": "^4.0.0"
+    "lodash": "^4.17.21"
   }
 }
