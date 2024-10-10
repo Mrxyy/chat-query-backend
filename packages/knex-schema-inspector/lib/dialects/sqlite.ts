@@ -1,5 +1,5 @@
 import { Knex } from 'knex';
-import flatten from 'lodash.flatten';
+import { flatten } from 'lodash';
 import { SchemaInspector } from '../types/schema-inspector';
 import { Table } from '../types/table';
 import { Column } from '../types/column';

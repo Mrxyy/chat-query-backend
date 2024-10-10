@@ -6,9 +6,13 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc --build",
+    "dev": "tsc --build -w",
     "prepare": "npm run build",
     "lint": "prettier --check .",
     "test": "npm run lint && ts-mocha test/**/*.spec.ts --timeout 10000"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "repository": {
     "type": "git",
@@ -48,7 +52,7 @@
     "lint-staged": "^13.0.3",
     "mocha": "^10.1.0",
     "mysql": "^2.18.1",
-    "oracledb": "^5.5.0",
+    "oracledb": "^6.6.0",
     "pg": "^8.8.0",
     "prettier": "^2.7.1",
     "sqlite3": "^5.1.2",

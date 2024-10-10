@@ -1,4 +1,4 @@
-import _, { keys } from 'lodash';
+import _, { get, keys } from 'lodash';
 import { DataTypes, Dialect, Sequelize } from 'sequelize';
 import { AutoBuilder } from './auto-builder';
 import { AutoGenerator } from './auto-generator';
@@ -7,6 +7,9 @@ import { AutoWriter } from './auto-writer';
 import { dialects } from './dialects/dialects';
 import { AutoOptions, TableData } from './types';
 
+function isSequelizeInstance(instance: any): instance is Sequelize {
+  return get(instance, 'constructor.name') === 'Sequelize';
+}
 export class SequelizeAuto {
   sequelize: Sequelize;
   options: AutoOptions;
@@ -23,8 +26,7 @@ export class SequelizeAuto {
       options.dialectOptions.options.enableArithAbort = true;
       options.dialectOptions.options.validateBulkLoadParameters = true;
     }
-
-    if (database instanceof Sequelize) {
+    if (isSequelizeInstance(database)) {
       this.sequelize = database;
     } else {
       this.sequelize = new Sequelize(database, username, password, options || {});

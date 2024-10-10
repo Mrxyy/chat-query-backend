@@ -59,9 +59,11 @@ export function parseDefaultValue(value: string | null): string | null {
 
 export default class oracleDB implements SchemaInspector {
   knex: Knex;
+  highVersion: Promise<boolean>;
 
   constructor(knex: Knex) {
     this.knex = knex;
+    this.highVersion = this.checkOracleVersion();
   }
 
   // Tables
@@ -157,6 +159,7 @@ export default class oracleDB implements SchemaInspector {
     /**
      * NOTE: Keep in mind, this query is optimized for speed.
      */
+    const isHighVersion = await this.highVersion;
     const query = this.knex
       .with(
         'uc',
@@ -195,7 +198,7 @@ export default class oracleDB implements SchemaInspector {
             "c"."DATA_PRECISION", 
             "c"."DATA_SCALE", 
             "c"."NULLABLE", 
-            "c"."IDENTITY_COLUMN", 
+            ${isHighVersion?`"c"."IDENTITY_COLUMN", `:''}
             "c"."VIRTUAL_COLUMN", 
             "cm"."COMMENTS" "COLUMN_COMMENT", 
             "ct"."CONSTRAINT_TYPE",
@@ -329,5 +332,32 @@ export default class oracleDB implements SchemaInspector {
     }
 
     return await query;
+  }
+
+  async checkOracleVersion() {
+    try {
+      // 执行 SQL 查询以获取 Oracle 数据库版本
+      const result = await this.knex.raw('SELECT * FROM v$version');
+      const versionRow = result[0]?.["BANNER"]; // 取出版本信息
+
+      console.log('Database Version:', versionRow);
+
+      // 提取版本号（假设版本信息是以 "Oracle Database 11g Enterprise Edition" 的形式存在）
+      const versionMatch = versionRow.match(/Oracle\sDatabase\s(\d+)/);
+      if (versionMatch) {
+        const versionNumber = parseInt(versionMatch[1], 10);
+
+        // 判断版本是否大于 11
+        if (versionNumber > 11) {
+          return true
+        } else {
+          return false
+        }
+      }
+    } catch (err) {
+      console.error('Error fetching Oracle version:', err);
+    }
+    this.knex.destroy()
+    return true
   }
 }

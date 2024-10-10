@@ -4,14 +4,8 @@ import { addTicks, DialectOptions, FKRow, makeCondition } from './dialect-option
 export const oracleOptions: DialectOptions = {
   name: 'oracle',
   hasSchema: true, // Oracle 使用 Schema
-  /**
-   * 生成一个 SQL 查询，返回一个表的所有外键。
-   *
-   * @param  {String} tableName  表名。
-   * @param  {String} schemaName 模式名。
-   * @return {String}            生成的 SQL 查询。
-   */
-  showTablesQuery() {
+
+  showTablesQuery(schema) {
     return `SELECT
     table_name,
     0 as lvl
@@ -20,10 +14,18 @@ FROM
 WHERE
     table_name NOT LIKE 'APEX_%'
 AND
-    table_name NOT LIKE 'WWV_%';
-`;
+    table_name NOT LIKE 'WWV_%'
+AND
+    table_name NOT LIKE 'SYS_%';`;
   },
 
+  /**
+   * 生成一个 SQL 查询，返回一个表的所有外键。
+   *
+   * @param  {String} tableName  表名。
+   * @param  {String} schemaName 模式名。
+   * @return {String}            生成的 SQL 查询。
+   */
   getForeignKeysQuery: (tableName: string, schemaName: string) => {
     return `SELECT
       a.constraint_name,

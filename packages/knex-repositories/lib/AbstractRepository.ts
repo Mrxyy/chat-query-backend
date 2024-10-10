@@ -269,7 +269,7 @@ export class AbstractRepository<
     params: GetParams<FullEntityRow> = {}
   ): Promise<FullEntityRow[]> {
     let filters
-    if (filterCriteria) {
+    if (filterCriteria && typeof filterCriteria === 'object') {
       filters = this.columnsForFilters
         ? this.pickWithoutUndefined(
             filterCriteria,
@@ -280,11 +280,11 @@ export class AbstractRepository<
     } else {
       filters = {}
     }
+
     const queryBuilder = await this.getKnexOrTransaction(transactionProvider)
 
-    const qb = queryBuilder(this.tableName)
-      .select(params.columnsToFetch ?? this.columnsToFetchList)
-      .where(filters)
+    let qb = queryBuilder(this.tableName).select(params.columnsToFetch ?? this.columnsToFetchList)
+    qb = typeof filterCriteria === 'string' ? qb.whereRaw(filterCriteria) : qb.where(filters)
 
     const sortParam = params.sorting ?? this.defaultOrderBy
     if (sortParam) {

@@ -1,5 +1,5 @@
 {
-  "name": "@vercel/fun",
+  "name": "@chat-query/fun",
   "version": "0.0.0-development",
   "description": "Local Lambda development environment",
   "main": "dist/src/index",

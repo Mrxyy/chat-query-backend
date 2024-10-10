@@ -22,9 +22,5 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true
   },
-  "exclude": [
-    "node_modules",
-    "dist",
-    "test"
-  ]
+  "exclude": ["node_modules", "dist", "test"]
 }

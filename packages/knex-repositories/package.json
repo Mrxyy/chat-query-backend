@@ -1,5 +1,5 @@
 {
-  "name": "knex-repositories",
+  "name": "@chat-query/knex-repositories",
   "version": "4.0.0",
   "license": "MIT",
   "maintainers": [
@@ -12,7 +12,9 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc ",
+    "dev": "tsc --build -w",
+    "prepare": "npm run build",
     "db:start": "docker-compose -f scripts/docker-compose.yml up --build -d mysql postgres mssql && docker-compose -f scripts/docker-compose.yml up waitmssql waitmysql waitpostgres",
     "db:stop": "docker-compose -f scripts/docker-compose.yml down",
     "test": "jest --config=jest.config.json --runInBand",

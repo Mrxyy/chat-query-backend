@@ -1,5 +1,5 @@
 {
-  "name": "sequelize-auto-model",
+  "name": "@chat-query/sequelize-auto-model",
   "version": "0.8.9",
   "publishConfig": {
     "tag": "latest"
@@ -43,6 +43,7 @@
     "tsc": "tsc --watch",
     "clean": "rimraf lib && rimraf types && rimraf **/models && rimraf *.tgz",
     "build": "npm run clean && tsc",
+    "prepare": "npm run build",
     "prepack": "crlf --set=LF bin/sequelize-auto",
     "test": "npm run test-mssql && npm run test-mysql && npm run test-postgres && npm run test-sqlite",
     "test-postgres": "cross-env DEBUG='sequelize-auto:*' DIALECT=postgres nyc mocha",
@@ -69,7 +70,7 @@
     "yargs": "^16.2.0"
   },
   "peerDependencies": {
-    "sequelize": ">3.30.0"
+    "sequelize": "^6.37.3"
   },
   "devDependencies": {
     "@types/chai": "^4.2.17",
@@ -92,7 +93,6 @@
     "pg": "^8.5.1",
     "pg-hstore": "^2.3.3",
     "rimraf": "^3.0.2",
-    "sequelize": "^6.11",
     "sqlite3": "5.0.2",
     "tedious": "^11.0.6",
     "typescript": "^4.2.3"
