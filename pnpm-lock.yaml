@@ -350,6 +350,9 @@ importers:
 
   packages/knex-schema-inspector:
     dependencies:
+      '@types/lodash':
+        specifier: ^4.14.168
+        version: 4.17.9
       lodash:
         specifier: ^4.17.21
         version: 4.17.21

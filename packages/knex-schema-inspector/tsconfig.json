@@ -10,7 +10,7 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "rootDir": "lib",
-    "sourceMap": true,
+    "sourceMap": true
   },
   "exclude": ["node_modules", "dist", "test"]
 }
