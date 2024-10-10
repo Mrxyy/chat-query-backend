@@ -1,0 +1,50 @@
+---
+
+name: Coverage
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Coverage
+
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          always-auth: false
+          node-version: ${{ matrix.node-version }}
+
+      - name: Start Databases
+        run: npm run db:start
+
+      - name: Run npm install
+        run: npm install
+
+      - name: Run Tests
+        run: npm run test:coverage
+        env:
+          DB: "postgres mysql mysql2 mssql sqlite3"
+
+      - name: Stop Databases
+        run: npm run db:stop
+
+      - name: Update Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+        if: success()
