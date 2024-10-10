@@ -1,0 +1,14 @@
+handler
+node_modules
+__pycache__
+*.swp
+/dist
+/?.js
+/examples/*/*.zip
+/test/functions/*/*.zip
+/test/functions/*/*.pyc
+/test/functions/*/out
+/.nyc_output
+/zeit-fun-*.tgz
+/pkg-invoke
+/util/python/python-binaries
