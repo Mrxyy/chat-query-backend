@@ -253,7 +253,7 @@ export class O1Service {
     }
   }
 
-  async applyModifications(newContent: string, filePath: string): boolean {
+  async applyModifications(newContent: string, filePath: string) {
     try {
       const oldContent = fs.readFileSync(filePath, 'utf-8');
 
