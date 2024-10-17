@@ -1,19 +1,22 @@
 import { Sequelize } from 'sequelize-typescript';
 import { Module } from '@nestjs/common';
-import { SChemaModel } from './models/Schema';
+import { SChemaModel } from './modules/Schema';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { Kenx } from './utils/knex';
-import { QueriesModel } from './models/Querys';
-import { OpenAIModule } from './models/AI/openAi';
+import { QueriesModel } from './modules/Querys';
+import { OpenAIModule } from './modules/AI/openAi';
 import { config } from 'dotenv';
-import { EventsModule } from './models/events/events.module';
-import { WidgetsModule } from './models/widgets';
-import { FlowNodeModel } from './models/FlowNode';
-import { WorkFlowModel } from './models/Flow';
+import { EventsModule } from './modules/events/events.module';
+import { WidgetsModule } from './modules/widgets';
+import { FlowNodeModel } from './modules/FlowNode';
+import { WorkFlowModel } from './modules/Flow';
 import { functionCallTest, testSqlModel } from './Example';
-import { ActionModule } from './models/Action';
+import { ActionModule } from './modules/Action';
 import { AppProviderModule } from './AppProvider';
-import { DBModule } from './models/Database';
+import { DBModule } from './modules/Database';
+import { O1 } from './utils/o1-enginner';
+import { AuthModule } from './modules/auth';
+import { SequelizeDatabaseModule } from './modules/Model';
 config();
 export const dbHost = process.env['DB_HOST'];
 export const dbPort = Number(process.env['DB_PORT']);
@@ -41,7 +44,6 @@ const env = [
     ...env,
     SChemaModel,
     QueriesModel,
-    Kenx,
     OpenAIModule,
     EventsModule,
     WidgetsModule,
@@ -50,6 +52,10 @@ const env = [
     AppProviderModule,
     ActionModule,
     DBModule,
+    Kenx,
+    O1,
+    AuthModule,
+    SequelizeDatabaseModule,
   ],
 })
 export class AppModule {

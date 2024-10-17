@@ -8,7 +8,7 @@ import {
   oracleSplitterOptions,
   splitQuery,
 } from 'dbgate-query-splitter';
-import { DBTypes } from '../../models/Database/DBTypes';
+import { DBTypes } from '../../modules/Database/DBTypes';
 
 export function getBatchSqlItems(sql: string, type: DBTypes) {
   let options;
@@ -19,7 +19,7 @@ export function getBatchSqlItems(sql: string, type: DBTypes) {
     case DBTypes.MSSQL:
       options = mssqlSplitterOptions;
       break;
-    case DBTypes.Postgre:
+    case DBTypes.Postgres:
       options = postgreSplitterOptions;
       break;
     case DBTypes.SQLite:

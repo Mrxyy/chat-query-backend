@@ -1,5 +1,5 @@
 import { flatten, get, map } from 'lodash';
-import { dbDrivers } from '../../models/Database/DBTypes';
+import { dbDrivers } from '../../modules/Database/DBTypes';
 import { Knex } from 'knex';
 import { disableConstraints, enableConstraints } from './extra';
 

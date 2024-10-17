@@ -21,3 +21,8 @@ export const huggingfaceOpenAi = new OpenAI({
   // required but ignored
   apiKey: 'huggingface',
 });
+
+export const openAi = new OpenAI({
+  apiKey: process.env.OPEN_AI_API_KEY,
+  baseURL: process.env.BASE_URL,
+});
