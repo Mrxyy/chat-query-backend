@@ -36,6 +36,9 @@ const env = [
     // logging: (sql) => {
     // console.log(sql);
     // },
+    // sync: {
+    //   alter: true, // 设置 alter 为 true
+    // },
   }),
 ];
 

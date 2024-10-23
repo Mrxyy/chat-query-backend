@@ -6,6 +6,9 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "db:migrate": "npx tsc -p tsconfig.migrations.json && npx sequelize-cli db:migrate",
+    "db:gen-migrate": "npx tsc -p tsconfig.migrations.json && npx sequelize-cli db:seed:all",
+    "db:auto-migrate": "npx tsc -p tsconfig.migrations.json && npx makemigration --name test1",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
@@ -52,6 +55,8 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
     "sequelize": "^6.37.3",
+    "sequelize-auto-migrations": "^1.0.3",
+    "sequelize-cli": "^6.6.2",
     "sequelize-typescript": "^2.1.5",
     "typeorm": "^0.3.16",
     "zod": "^3.21.4"

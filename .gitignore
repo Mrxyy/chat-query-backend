@@ -38,3 +38,4 @@ lerna-debug.log*
 tsconfig.dev.json
 
 python
+db-dist

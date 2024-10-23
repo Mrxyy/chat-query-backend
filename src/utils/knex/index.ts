@@ -61,8 +61,8 @@ export class KnexContainer {
         oracledb.initOracleClient({
           libDir:
             process.env['LD_LIBRARY_PATH'] ||
-            // process.env.HOME + '/Downloads/instantclient_23_3',
-            process.env.HOME + '/Downloads/instantclient_19_8',
+            process.env.HOME + '/Downloads/instantclient_23_3',
+          // process.env.HOME + '/Downloads/instantclient_19_8',
         });
         console.log('启用oracle厚模式');
         KnexContainer.oracledbInit = true;
