@@ -4,3 +4,4 @@ packages:
   - 'packages/sequelize-auto-model'
   - 'packages/knex-schema-inspector'
   - 'packages/knex-repositories'
+  - 'packages/sequelize-auto-migrations'

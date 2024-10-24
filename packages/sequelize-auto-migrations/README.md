@@ -28,10 +28,13 @@ To create and then execute migration, use:
 ## Executing migrations
 * There is simple command to perform all created migrations (from selected revision):
 
+
 `runmigration`
 * To select a revision, use `--rev <x>`
-* If migration fails, you can continue, use `--pos <x>`
-* To prevent execution next migrations, use `--one`
+* To prevent execution of next migrations, use `--one`
+* To rollback/downgrade to the selected revision, use `--rollback`
+
+Each migration runs in a transaction, so it will be rolled back if part of it fails. To disable, use `--no-transaction`. Then, if it fails, you can continue by using `--pos <x>`.
 
 
 For more information, use `makemigration --help`, `runmigration --help`

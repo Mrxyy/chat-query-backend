@@ -1,0 +1,530 @@
+{
+    "tables": {
+        "Users": {
+            "tableName": "Users",
+            "schema": {
+                "id": {
+                    "defaultValue": {
+                        "internal": true,
+                        "value": "DataTypes.UUIDV4"
+                    },
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "DataTypes.UUID"
+                },
+                "name": {
+                    "allowNull": false,
+                    "field": "name",
+                    "seqType": "DataTypes.STRING"
+                },
+                "password": {
+                    "allowNull": false,
+                    "field": "password",
+                    "seqType": "DataTypes.STRING"
+                },
+                "email": {
+                    "allowNull": false,
+                    "unique": true,
+                    "field": "email",
+                    "seqType": "DataTypes.STRING"
+                },
+                "image": {
+                    "allowNull": true,
+                    "field": "image",
+                    "seqType": "DataTypes.STRING"
+                },
+                "emailVerified": {
+                    "field": "emailVerified",
+                    "seqType": "DataTypes.DATE"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "createdAt",
+                    "seqType": "DataTypes.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updatedAt",
+                    "seqType": "DataTypes.DATE"
+                },
+                "DeletedAt": {
+                    "field": "DeletedAt",
+                    "seqType": "DataTypes.DATE"
+                }
+            },
+            "indexes": []
+        },
+        "ActionModels": {
+            "tableName": "ActionModels",
+            "schema": {
+                "id": {
+                    "defaultValue": {
+                        "internal": true,
+                        "value": "DataTypes.UUIDV4"
+                    },
+                    "comment": "id",
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "DataTypes.UUID"
+                },
+                "DbId": {
+                    "field": "DbId",
+                    "seqType": "DataTypes.UUID"
+                },
+                "userId": {
+                    "allowNull": true,
+                    "field": "userId",
+                    "seqType": "DataTypes.UUID"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "createdAt",
+                    "seqType": "DataTypes.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updatedAt",
+                    "seqType": "DataTypes.DATE"
+                },
+                "DeletedAt": {
+                    "field": "DeletedAt",
+                    "seqType": "DataTypes.DATE"
+                }
+            },
+            "indexes": []
+        },
+        "DBSchemas": {
+            "tableName": "DBSchemas",
+            "schema": {
+                "DBId": {
+                    "field": "DBId",
+                    "name": "DBId",
+                    "primaryKey": true,
+                    "references": {
+                        "model": "DBs",
+                        "key": "id"
+                    },
+                    "onDelete": "CASCADE",
+                    "onUpdate": "CASCADE",
+                    "unique": "DBSchemas_SchemaId_DBId_unique",
+                    "seqType": "DataTypes.UUID"
+                },
+                "userId": {
+                    "allowNull": true,
+                    "field": "userId",
+                    "seqType": "DataTypes.UUID"
+                },
+                "SchemaId": {
+                    "field": "SchemaId",
+                    "name": "SchemaId",
+                    "primaryKey": true,
+                    "references": {
+                        "model": "Schemas",
+                        "key": "id"
+                    },
+                    "onDelete": "CASCADE",
+                    "onUpdate": "CASCADE",
+                    "unique": "DBSchemas_SchemaId_DBId_unique",
+                    "seqType": "DataTypes.UUID"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "createdAt",
+                    "seqType": "DataTypes.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updatedAt",
+                    "seqType": "DataTypes.DATE"
+                },
+                "DeletedAt": {
+                    "field": "DeletedAt",
+                    "seqType": "DataTypes.DATE"
+                }
+            },
+            "indexes": []
+        },
+        "DBs": {
+            "tableName": "DBs",
+            "schema": {
+                "id": {
+                    "defaultValue": {
+                        "internal": true,
+                        "value": "DataTypes.UUIDV4"
+                    },
+                    "comment": "id",
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "DataTypes.UUID"
+                },
+                "userId": {
+                    "allowNull": true,
+                    "field": "userId",
+                    "seqType": "DataTypes.UUID"
+                },
+                "name": {
+                    "allowNull": false,
+                    "comment": "连接名称",
+                    "field": "name",
+                    "seqType": "DataTypes.STRING"
+                },
+                "config": {
+                    "allowNull": false,
+                    "comment": "配置",
+                    "field": "config",
+                    "seqType": "DataTypes.JSON"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "createdAt",
+                    "seqType": "DataTypes.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updatedAt",
+                    "seqType": "DataTypes.DATE"
+                },
+                "DeletedAt": {
+                    "field": "DeletedAt",
+                    "seqType": "DataTypes.DATE"
+                }
+            },
+            "indexes": []
+        },
+        "Workflows": {
+            "tableName": "Workflows",
+            "schema": {
+                "id": {
+                    "defaultValue": {
+                        "internal": true,
+                        "value": "DataTypes.UUIDV4"
+                    },
+                    "comment": "id",
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "DataTypes.UUID"
+                },
+                "flowJson": {
+                    "defaultValue": {
+                        "value": "{}"
+                    },
+                    "field": "flowJson",
+                    "seqType": "DataTypes.JSON"
+                },
+                "name": {
+                    "allowNull": true,
+                    "comment": "名称",
+                    "field": "name",
+                    "seqType": "DataTypes.STRING"
+                },
+                "userId": {
+                    "allowNull": true,
+                    "field": "userId",
+                    "seqType": "DataTypes.UUID"
+                },
+                "DeletedAt": {
+                    "field": "DeletedAt",
+                    "seqType": "DataTypes.DATE"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "createdAt",
+                    "seqType": "DataTypes.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updatedAt",
+                    "seqType": "DataTypes.DATE"
+                }
+            },
+            "indexes": []
+        },
+        "FlowNodes": {
+            "tableName": "FlowNodes",
+            "schema": {
+                "id": {
+                    "defaultValue": {
+                        "internal": true,
+                        "value": "DataTypes.UUIDV4"
+                    },
+                    "comment": "id",
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "DataTypes.UUID"
+                },
+                "userId": {
+                    "allowNull": true,
+                    "field": "userId",
+                    "seqType": "DataTypes.UUID"
+                },
+                "type": {
+                    "field": "type",
+                    "seqType": "DataTypes.STRING"
+                },
+                "data": {
+                    "field": "data",
+                    "seqType": "DataTypes.JSON"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "createdAt",
+                    "seqType": "DataTypes.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updatedAt",
+                    "seqType": "DataTypes.DATE"
+                },
+                "DeletedAt": {
+                    "field": "DeletedAt",
+                    "seqType": "DataTypes.DATE"
+                }
+            },
+            "indexes": []
+        },
+        "Queries": {
+            "tableName": "Queries",
+            "schema": {
+                "id": {
+                    "defaultValue": {
+                        "internal": true,
+                        "value": "DataTypes.UUIDV4"
+                    },
+                    "comment": "id",
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "DataTypes.UUID"
+                },
+                "name": {
+                    "allowNull": false,
+                    "comment": "Query名称",
+                    "field": "name",
+                    "seqType": "DataTypes.STRING"
+                },
+                "content": {
+                    "allowNull": false,
+                    "comment": "内容",
+                    "field": "content",
+                    "seqType": "DataTypes.JSON"
+                },
+                "userId": {
+                    "allowNull": true,
+                    "field": "userId",
+                    "seqType": "DataTypes.UUID"
+                },
+                "DbID": {
+                    "field": "DbID",
+                    "allowNull": true,
+                    "name": "DbID",
+                    "references": {
+                        "model": "DBs",
+                        "key": "id"
+                    },
+                    "onDelete": "CASCADE",
+                    "onUpdate": "CASCADE",
+                    "seqType": "DataTypes.UUID"
+                },
+                "schemaId": {
+                    "field": "schemaId",
+                    "allowNull": true,
+                    "name": "schemaId",
+                    "references": {
+                        "model": "Schemas",
+                        "key": "id"
+                    },
+                    "onDelete": "NO ACTION",
+                    "onUpdate": "CASCADE",
+                    "seqType": "DataTypes.UUID"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "createdAt",
+                    "seqType": "DataTypes.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updatedAt",
+                    "seqType": "DataTypes.DATE"
+                },
+                "DeletedAt": {
+                    "field": "DeletedAt",
+                    "seqType": "DataTypes.DATE"
+                }
+            },
+            "indexes": []
+        },
+        "Schemas": {
+            "tableName": "Schemas",
+            "schema": {
+                "id": {
+                    "defaultValue": {
+                        "internal": true,
+                        "value": "DataTypes.UUIDV4"
+                    },
+                    "comment": "id",
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "DataTypes.UUID"
+                },
+                "name": {
+                    "allowNull": false,
+                    "comment": "模型名称",
+                    "field": "name",
+                    "seqType": "DataTypes.STRING"
+                },
+                "graph": {
+                    "allowNull": false,
+                    "comment": "模型结构",
+                    "field": "graph",
+                    "seqType": "DataTypes.JSON"
+                },
+                "userId": {
+                    "allowNull": true,
+                    "field": "userId",
+                    "seqType": "DataTypes.UUID"
+                },
+                "description": {
+                    "allowNull": true,
+                    "comment": "模型描述",
+                    "field": "description",
+                    "seqType": "DataTypes.STRING(10000)"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "createdAt",
+                    "seqType": "DataTypes.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updatedAt",
+                    "seqType": "DataTypes.DATE"
+                },
+                "DeletedAt": {
+                    "field": "DeletedAt",
+                    "seqType": "DataTypes.DATE"
+                }
+            },
+            "indexes": []
+        },
+        "SchemaLogs": {
+            "tableName": "SchemaLogs",
+            "schema": {
+                "id": {
+                    "defaultValue": {
+                        "internal": true,
+                        "value": "DataTypes.UUIDV4"
+                    },
+                    "comment": "id",
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "DataTypes.UUID"
+                },
+                "userId": {
+                    "allowNull": true,
+                    "field": "userId",
+                    "seqType": "DataTypes.UUID"
+                },
+                "schemaId": {
+                    "field": "schemaId",
+                    "allowNull": true,
+                    "name": "schemaId",
+                    "references": {
+                        "model": "Schemas",
+                        "key": "id"
+                    },
+                    "onDelete": "CASCADE",
+                    "onUpdate": "CASCADE",
+                    "seqType": "DataTypes.UUID"
+                },
+                "name": {
+                    "allowNull": false,
+                    "comment": "模型名称",
+                    "field": "name",
+                    "seqType": "DataTypes.STRING"
+                },
+                "graph": {
+                    "allowNull": false,
+                    "comment": "模型结构",
+                    "field": "graph",
+                    "seqType": "DataTypes.JSON"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "createdAt",
+                    "seqType": "DataTypes.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updatedAt",
+                    "seqType": "DataTypes.DATE"
+                }
+            },
+            "indexes": []
+        },
+        "Widgets": {
+            "tableName": "Widgets",
+            "schema": {
+                "id": {
+                    "defaultValue": {
+                        "internal": true,
+                        "value": "DataTypes.UUIDV4"
+                    },
+                    "comment": "id",
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "DataTypes.UUID"
+                },
+                "userId": {
+                    "allowNull": true,
+                    "field": "userId",
+                    "seqType": "DataTypes.UUID"
+                },
+                "content": {
+                    "allowNull": false,
+                    "comment": "组件内容",
+                    "field": "content",
+                    "seqType": "DataTypes.JSON"
+                },
+                "props": {
+                    "allowNull": false,
+                    "comment": "组件配置",
+                    "field": "props",
+                    "seqType": "DataTypes.JSON"
+                },
+                "name": {
+                    "comment": "组件名称",
+                    "field": "name",
+                    "seqType": "DataTypes.JSON"
+                },
+                "key": {
+                    "comment": "组件识别名称",
+                    "unique": "widget-key",
+                    "field": "key",
+                    "seqType": "DataTypes.STRING(100)"
+                },
+                "author": {
+                    "allowNull": true,
+                    "comment": "作者ID",
+                    "field": "author",
+                    "seqType": "DataTypes.STRING(1000)"
+                },
+                "createdAt": {
+                    "allowNull": false,
+                    "field": "createdAt",
+                    "seqType": "DataTypes.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "field": "updatedAt",
+                    "seqType": "DataTypes.DATE"
+                },
+                "DeletedAt": {
+                    "field": "DeletedAt",
+                    "seqType": "DataTypes.DATE"
+                }
+            },
+            "indexes": []
+        }
+    },
+    "revision": 1
+}
