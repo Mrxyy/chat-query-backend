@@ -2,7 +2,7 @@
   "development": {
     "username": "root",
     "password": "123789xyy",
-    "database": "test",
+    "database": "chat_query",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },

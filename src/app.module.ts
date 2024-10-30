@@ -17,6 +17,8 @@ import { DBModule } from './modules/Database';
 import { O1 } from './utils/o1-enginner';
 import { AuthModule } from './modules/auth';
 import { SequelizeDatabaseModule } from './modules/Model';
+import { LLMConfigModule } from './modules/LlmConfig';
+import { FeatureAiSettingModule } from './modules/Feature';
 config();
 export const dbHost = process.env['DB_HOST'];
 export const dbPort = Number(process.env['DB_PORT']);
@@ -59,6 +61,8 @@ const env = [
     O1,
     AuthModule,
     SequelizeDatabaseModule,
+    LLMConfigModule,
+    FeatureAiSettingModule,
   ],
 })
 export class AppModule {

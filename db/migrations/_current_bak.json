@@ -646,57 +646,7 @@
                 }
             },
             "indexes": []
-        },
-        "FeatureAiSettings": {
-            "tableName": "FeatureAiSettings",
-            "schema": {
-                "id": {
-                    "defaultValue": {
-                        "internal": true,
-                        "value": "DataTypes.UUIDV4"
-                    },
-                    "comment": "ID",
-                    "primaryKey": true,
-                    "field": "id",
-                    "seqType": "DataTypes.UUID"
-                },
-                "userId": {
-                    "allowNull": true,
-                    "field": "userId",
-                    "seqType": "DataTypes.UUID"
-                },
-                "modelName": {
-                    "comment": "名称",
-                    "field": "modelName",
-                    "seqType": "DataTypes.STRING"
-                },
-                "featureName": {
-                    "comment": "功能名称",
-                    "field": "featureName",
-                    "seqType": "DataTypes.STRING"
-                },
-                "config": {
-                    "comment": "",
-                    "field": "config",
-                    "seqType": "DataTypes.JSON"
-                },
-                "DeletedAt": {
-                    "field": "DeletedAt",
-                    "seqType": "DataTypes.DATE"
-                },
-                "createdAt": {
-                    "allowNull": false,
-                    "field": "createdAt",
-                    "seqType": "DataTypes.DATE"
-                },
-                "updatedAt": {
-                    "allowNull": false,
-                    "field": "updatedAt",
-                    "seqType": "DataTypes.DATE"
-                }
-            },
-            "indexes": []
         }
     },
-    "revision": 4
+    "revision": 3
 }

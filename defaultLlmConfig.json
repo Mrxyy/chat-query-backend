@@ -1,0 +1,31 @@
+{
+  "models": {
+    "gemini": {
+      "baseURL": "/gemini",
+      "requestModelsPath": "/models",
+      "getModelsPathFormResponse": "models",
+      "defaultModelsList": [],
+      "createFunction": 1
+    },
+    "ollama": {
+      "baseURL": "/ollama",
+      "requestModelsPath": "/api/tags",
+      "getModelsPathFormResponse": "models",
+      "defaultModelsList": [],
+      "createFunction": 2
+    },
+    "openai": {
+      "defaultModelsList": []
+    },
+    "groq": {
+      "defaultModelsList": []
+    },
+    "siliconflow": {
+      "defaultModelsList": []
+    },
+    "cerebras": {
+      "defaultModelsList": []
+    }
+  },
+  "defaultModel": "openai,gpt-4o-mini"
+}

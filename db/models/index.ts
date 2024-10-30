@@ -1,6 +1,4 @@
 import { User } from './../../src/models/User.model';
-import { readdirSync } from 'fs';
-import * as path from 'path';
 import * as jsonConfig from '../database.json';
 import { ActionModel } from '../../src/models/Action.model';
 import { DBSchema } from '../../src/models/DBSchema.model';
@@ -11,9 +9,10 @@ import { Query } from '../../src/models/Query.model';
 import { Schema } from '../../src/models/schema.model';
 import { SchemaLog } from '../../src/models/SchemaLog.model';
 import { Widgets } from '../../src/models/widgets.model';
-import { forEach } from 'lodash';
+import { LLMConfig } from '../../src/models/LLMConfig.model';
+import { LLMModels } from '../../src/models/LLMModels.model';
+import { FeatureAiSetting } from '../../src/models/FeatureAiSetting.model';
 import { Model, Sequelize } from 'sequelize-typescript';
-const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
 const config = jsonConfig[env];
 
@@ -28,6 +27,9 @@ const allModels = [
   Schema,
   SchemaLog,
   Widgets,
+  LLMConfig,
+  LLMModels,
+  FeatureAiSetting,
 ];
 
 const db: {
