@@ -11,5 +11,7 @@ elif [ "$ARCH" = "aarch64" ]; then
     scripts/download-oracle-arm64.sh
 fi
 
+pnpm db:auto-migrate
+pnpm run-migration
 # 执行 Node.js 应用
 npm run start:prod

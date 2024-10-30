@@ -40,8 +40,5 @@ COPY dist ./dist
 # 暴露端口，确保与 Nest.js 应用程序中设置的端口一致
 EXPOSE 3001
 
-RUN pnpm db:auto-migrate
-RUN pnpm run-migration
-
 # 启动命令
 CMD [ "./scripts/start.sh" ]
